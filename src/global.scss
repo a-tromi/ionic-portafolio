@@ -42,13 +42,16 @@ ion-header {
     --ion-toolbar-border-color: transparent; /* Elimina el borde */
   }
 
-ion-content {
+  /*
+  ion-content {
     --background: #d9e4d7;
     --color: #fff;
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
-}
+    }
+  */
+
 
 ion-header,
   ion-toolbar,
