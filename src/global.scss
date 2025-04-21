@@ -36,6 +36,12 @@
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
 
+ion-header {
+    --background: transparent; /* Fondo transparente */
+    --ion-toolbar-background: transparent; /* Fondo transparente para la toolbar */
+    --ion-toolbar-border-color: transparent; /* Elimina el borde */
+  }
+
 ion-content {
     --background: #d9e4d7;
     --color: #fff;
@@ -43,3 +49,26 @@ ion-content {
     background-position: center center;
     background-size: cover;
 }
+
+ion-header,
+  ion-toolbar,
+  ion-buttons,
+  app-company-name {
+    color: #324D3E; /* Ajusta el color del texto o íconos a darkblue */
+  }
+
+  ion-header,
+  ion-toolbar {
+    --ion-toolbar-border-color: transparent; /* Quita el borde */
+    --background: transparent;               /* Hace transparente la barra */ 
+  }
+ 
+  .header-md{
+    -webkit-box-shadow: none !important; /* Elimina la sombra */
+    box-shadow: none !important; /* Elimina la sombra */
+  }
+
+  .title_tab h2 {
+    text-align: center;
+    color: #324D3E;
+  }

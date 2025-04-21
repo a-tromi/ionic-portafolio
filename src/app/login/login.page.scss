@@ -52,6 +52,10 @@ ion-content {
     color: white; /* Texto botón */
   }
 
+  .login-container img {
+    width: 60%;  
+  }  
+
   .register-button {
     color: #324d3e;
     text-transform: uppercase;
@@ -78,17 +82,14 @@ ion-content {
     padding-top: 10%;
   }
 
-  .login-container img {
-    width: 60%;  
-  }
-
-
   .logo {
     width: 50%; /* Ajusta el tamaño del logo */
     animation: zoomInOut 5s  ease-in-out; 
     opacity: 0;
     animation-fill-mode: forwards; /* Mantiene el estado final */
   }
+
+
   
 
   /* Definición de animación */

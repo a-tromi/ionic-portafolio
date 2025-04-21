@@ -25,3 +25,28 @@
 #container a {
   text-decoration: none;
 }
+
+.logo-container {  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 5%;
+}
+
+.logo {
+  width: 70px;
+  height: 70px;
+}
+
+.user-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;   
+}
+
+
+
+
+
+
+
