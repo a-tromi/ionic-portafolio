@@ -1,109 +1,97 @@
-ion-toolbar {
-  --background: #d9e4d7;
-}
-
-ion-content {
-  --background: #d9e4d7;
-  --color: #fff;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
-}
-
-  ion-card {
-    background-color: rgba(255, 255, 255, 0.6); /* Fondo semitransparente */
-    backdrop-filter: blur(5px);    
-    box-shadow: none;
-    border-radius: 6%;
-    margin: 5%  auto;
-    width: 95%; 
-  }
- 
-  ion-card ion-input {
-    --background: transparent; /* Fondo transparente */
-    color: #728a6e; /* Color de texto email y contraseña */
-  }
-  
-  ion-card input {
-    background-color: transparent; /* Fondo transparente para navegadores que no usan variables CSS */
-    color: #728a6e;
-  }
-
-
-  ion-card ion-label {
-    --background: transparent; /* Fondo transparente */
-    color: hwb(149 9% 73%); 
-  }
-  
-  ion-card label {
-    background-color: transparent; /* Fondo transparente para navegadores que no usan variables CSS */
-    color: #becfbb; 
-  }
-
-
-  ion-card ion-item {
-    --background: transparent; /* Fondo transparente */
-    color: #becfbb;
-  }
-  
-  
-  ion-card ion-button.login-button { /*Botón inicio sesión*/
-    --background: #3E5647; /* Fondo botón */
-    color: white; /* Texto botón */
-  }
-
-  .login-container img {
-    width: 60%;  
-  }  
-
-  .register-button {
-    color: #324d3e;
-    text-transform: uppercase;
-    margin-top: 10px;
-  }
-   
-
-  .forgot-password {
-    text-align: center;
-    margin-top: 10px;
-    display: block;
-  
-    a {
-      color: #2a534c;
-      text-decoration: none;
-    }
-  }
-
+ion-header {
+  --background: transparent;
 
   .logo-container {
     display: flex;
-    justify-content: center; 
+    justify-content: center;
     align-items: center;
-    padding-top: 10%;
-  }
-
-  .logo {
-    width: 50%; /* Ajusta el tamaño del logo */
-    animation: zoomInOut 5s  ease-in-out; 
-    opacity: 0;
-    animation-fill-mode: forwards; /* Mantiene el estado final */
-  }
-
-
-  
-
-  /* Definición de animación */
-  @keyframes zoomInOut {
-    0% {
-      transform: scale(0.5); /* Tamaño inicial */
-      opacity: 0;
-    }
-    50% {
-      transform: scale(1.2); /* Zoom al 10% */
-      opacity: 1; /* Aparece completamente */
-    }
-    100% {
-      transform: scale(1); /* Regresa al tamaño inicial */
-      opacity: 0.8; 
+    padding: 2rem 1rem 1rem;
+    
+    .logo {
+      width: 60%;
+      max-width: 200px;
+      animation: float 3.5s ease-in-out infinite;
     }
   }
+}
+
+// Animación flotante para el logo
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+
+ion-content {
+  --background: linear-gradient(to bottom right, #e6f4e9, #f9fff8);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  ion-card.login\.card {
+    width: 90%;
+    max-width: 400px;
+    padding: 2rem 1.5rem;
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(106, 168, 79, 0.2);
+    background: #ffffff;
+
+    .input-item {
+      --background: transparent;
+      --highlight-color-focused: #6aa84f;
+      --border-color: #b6d7a8;
+      margin-bottom: 1rem;
+
+      ion-label {
+        color: #3e7045;
+        font-weight: 500;
+      }
+
+      ion-input {
+        color: #2d572c;
+      }
+    }
+
+    .login-button {
+      --background: #6aa84f;
+      --color: white;
+      font-weight: bold;
+      margin-top: 1rem;
+      border-radius: 12px;
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: scale(1.03);
+      }
+    }
+
+    .register-button {
+      margin-top: 0.5rem;
+      color: #4e734e;
+      font-weight: 500;
+      text-decoration: underline;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: #2d572c;
+      }
+    }
+
+    .forgot-password {
+      text-align: center;
+      margin-top: 1.5rem;
+
+      a {
+        color: #5e825e;
+        font-style: italic;
+        font-size: 0.9rem;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
