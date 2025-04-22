@@ -1,0 +1,122 @@
+ion-header {
+  background: linear-gradient(135deg, #b6d7a8, #d9ead3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+
+  ion-toolbar {
+    --background: transparent;
+    --color: #2f4f2f;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding-bottom: 0.5rem;
+
+    .logo-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 1rem;
+
+      .logo {
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+        border-radius: 50%;
+        background-color: #728A6E;
+        padding: 10px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        animation: float 6s ease-in-out infinite;
+        transition: transform 0.3s ease-in-out;
+
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
+    }
+
+    .center-title {
+      font-weight: bold;
+      font-size: 1.4rem;
+      text-align: center;
+      color: #2d572c;
+      margin-top: 0.5rem;
+    }
+
+    ion-buttons[slot="start"],
+    ion-buttons[slot="end"] {
+      position: absolute;
+      top: 0.5rem;
+    }
+
+    ion-buttons[slot="start"] {
+      left: 0.5rem;
+    }
+
+    ion-buttons[slot="end"] {
+      right: 0.5rem;
+    }
+
+    ion-back-button,
+    ion-menu-button {
+      color: #2f4f2f;
+    }
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+ion-content {
+  --background: #f5fff7;
+
+  ion-card {
+    margin: 2rem 1rem;
+    border-radius: 20px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+    background-color: #ffffff;
+
+    ion-card-content {
+      padding: 1.5rem;
+
+      ion-item {
+        --background: transparent;
+        --color: #2d572c;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+        ion-label {
+          color: #4e734e;
+          font-weight: 500;
+        }
+
+        ion-input {
+          color: #2d572c;
+        }
+      }
+
+      ion-button {
+        --background: #6aa84f;
+        --background-activated: #558f3f;
+        --border-radius: 12px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        margin-top: 1rem;
+        transition: transform 0.2s ease-in-out;
+
+        &:hover {
+          transform: scale(1.03);
+        }
+      }
+    }
+  }
+}

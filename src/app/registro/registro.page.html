@@ -1,0 +1,57 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+
+    <ion-title class="center-title"> Registrate aquí</ion-title>
+
+    <!-- Botón de menú a la derecha -->
+    <ion-buttons slot="end">
+      <ion-menu-button menu="mainMenu"></ion-menu-button>
+    </ion-buttons>
+    
+  </ion-toolbar>
+
+  <div class="logo-container">
+    <img src="../../assets/img/patitasPet-logo.png" alt="Logo" class="logo">
+  </div>
+
+</ion-header>
+
+
+<ion-content [fullscreen]="true"> 
+
+   
+    <ion-card>
+
+  
+      <!-- Creamos los campos para el home-->
+      <ion-card-content>        
+        <ion-item>
+          <ion-label position="floating">Nombre</ion-label>
+          <ion-input type="text" [(ngModel)]="nombre"></ion-input>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label position="floating">Apellido</ion-label>
+          <ion-input type="text" [(ngModel)]="apellido"></ion-input>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label position="floating">usuario</ion-label>
+          <ion-input type="text" [(ngModel)]="usuario"></ion-input>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label position="floating">Contraseña</ion-label>
+          <ion-input type="password" [(ngModel)]="password"></ion-input>
+        </ion-item>
+      </ion-card-content>      
+
+        <ion-button (click)="guardar()"  expand="block" fill="clear">Guardar Datos</ion-button> 
+
+    </ion-card>
+   
+</ion-content>
