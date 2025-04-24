@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -7,20 +7,30 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['home.page.scss'],
   standalone: false,
 })
-export class HomePage {
+export class HomePage implements OnInit {
 
+  nombre: string = '';
   email: string = '';
   password: string = '';
-  hola: string='Hola 👋';
+  foto: string = '../../assets/img/avatar.png';
+  hola: string = 'Hola 👋';
 
+  constructor(private route: ActivatedRoute, private router: Router) {}
 
-  constructor(private route: ActivatedRoute,) {}
+  ngOnInit() {
+    this.nombre = localStorage.getItem('nombreUsuario') || 'Usuario';
+    this.email = localStorage.getItem('emailUsuario') || '';
+    const fotoGuardada = localStorage.getItem('fotoUsuario');
+    if (fotoGuardada) {
+      this.foto = fotoGuardada;
+    }
+  }
 
-  ngOnInit() { 
-    // Obtener los parámetros de la URL
-    this.route.queryParams.subscribe(params => {
-      this.email = params['email'];
-      this.password = params['password'];
-    });
+  // 👇 Método para cerrar sesión
+  cerrarSesion() {
+    localStorage.removeItem('nombreUsuario');
+    localStorage.removeItem('emailUsuario');
+    localStorage.removeItem('fotoUsuario');
+    this.router.navigate(['/login']);
   }
 }

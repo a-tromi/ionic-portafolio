@@ -1,57 +1,71 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
-
     <ion-title class="center-title"> Registrate aquí</ion-title>
-
-    <!-- Botón de menú a la derecha -->
     <ion-buttons slot="end">
       <ion-menu-button menu="mainMenu"></ion-menu-button>
-    </ion-buttons>
-    
+    </ion-buttons>    
   </ion-toolbar>
 
   <div class="logo-container">
     <img src="../../assets/img/patitasPet-logo.png" alt="Logo" class="logo">
   </div>
-
 </ion-header>
 
+<ion-content [fullscreen]="true">   
+  <ion-card>
+    <ion-card-content>
+      <!-- Selector de foto -->
+      <div class="foto-container" *ngIf="fotoSeleccionada; else sinFoto">
+        <img [src]="fotoSeleccionada" alt="Foto seleccionada" class="foto-preview" />
+        <div class="foto-actions">
+          <ion-button size="small" (click)="cambiarFoto()">Cambiar</ion-button>
+          <ion-button size="small" color="danger" (click)="eliminarFoto()">Eliminar</ion-button>
+        </div>
+      </div>
 
-<ion-content [fullscreen]="true"> 
+      <ng-template #sinFoto>
+        <ion-button expand="block" (click)="cambiarFoto()">Subir Foto</ion-button>
+      </ng-template>
 
-   
-    <ion-card>
+      <input type="file" accept="image/*" (change)="onFileSelected($event)" hidden />      
 
-  
-      <!-- Creamos los campos para el home-->
-      <ion-card-content>        
-        <ion-item>
-          <ion-label position="floating">Nombre</ion-label>
-          <ion-input type="text" [(ngModel)]="nombre"></ion-input>
-        </ion-item>
-        
-        <ion-item>
-          <ion-label position="floating">Apellido</ion-label>
-          <ion-input type="text" [(ngModel)]="apellido"></ion-input>
-        </ion-item>
-        
-        <ion-item>
-          <ion-label position="floating">usuario</ion-label>
-          <ion-input type="text" [(ngModel)]="usuario"></ion-input>
-        </ion-item>
-        
-        <ion-item>
-          <ion-label position="floating">Contraseña</ion-label>
-          <ion-input type="password" [(ngModel)]="password"></ion-input>
-        </ion-item>
-      </ion-card-content>      
+      <!-- Nombre -->
+      <ion-item [class.invalid]="nombre.trim().length === 0 && nombreTouched">
+        <ion-label position="floating">Nombre</ion-label>
+        <ion-input [(ngModel)]="nombre" type="text" (ionBlur)="nombreTouched = true"></ion-input>
+      </ion-item>
+      <ion-text color="danger" *ngIf="nombre.trim().length === 0 && nombreTouched">
+        <p class="ion-padding-start">El nombre es obligatorio.</p>
+      </ion-text>
 
-        <ion-button (click)="guardar()"  expand="block" fill="clear">Guardar Datos</ion-button> 
+      <!-- Correo -->
+      <ion-item [class.invalid]="emailInvalido">
+        <ion-label position="floating">Correo electrónico</ion-label>
+        <ion-input type="email" [(ngModel)]="email" (ionInput)="validarEmailTiempoReal()" required></ion-input>
+      </ion-item>
+      <ion-text color="danger" *ngIf="emailInvalido">
+        <p class="ion-padding-start">Correo electrónico inválido.</p>
+      </ion-text>
 
-    </ion-card>
-   
+      <!-- Contraseña -->
+      <ion-item [class.invalid]="password.length < 6 && passwordTouched">
+        <ion-label position="floating">Contraseña</ion-label>
+        <ion-input [(ngModel)]="password" type="password" (ionBlur)="passwordTouched = true"></ion-input>
+      </ion-item>
+      <ion-text color="danger" *ngIf="password.length < 6 && passwordTouched">
+        <p class="ion-padding-start">La contraseña debe tener al menos 6 caracteres.</p>
+      </ion-text>
+    </ion-card-content>
+
+    <!-- Botón de registro -->
+    <ion-button expand="block" (click)="registrarse()" class="login-button">Registrarse</ion-button>
+
+    <!-- Ir al login -->
+    <ion-button expand="block" (click)="irALogin()" fill="clear" class="register-button">
+      ¿Ya tienes cuenta? Iniciar Sesion
+    </ion-button>  
+  </ion-card>   
 </ion-content>

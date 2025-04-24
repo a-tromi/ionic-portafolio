@@ -56,8 +56,8 @@ export class LoginPage implements OnInit {
   }
 
     // Validando la longitud de la contraseña (4 caracteres)
-    if (!this.password || this.password.trim().length < 4) {
-      this.mensajeAlerta('La contraseña debe tener al menos 4 caracteres.');
+    if (!this.password || this.password.trim().length < 6) {
+      this.mensajeAlerta('La contraseña debe tener al menos 6 caracteres.');
       return;
     }
 
