@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, MenuController, AlertController, ToastController } from '@ionic/angular'; // Agregamos ToastController
+import { IonicModule, MenuController, AlertController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,17 +13,17 @@ import { Router } from '@angular/router';
 })
 export class RegistroPage implements OnInit {
 
-  // Variables del formulario
+  // Variables del formulario de registro
   nombre: string = '';
   email: string = '';
   password: string = '';
   emailInvalido: boolean = false;
 
-  // Foto
+  // Variables para manejar la imagen seleccionada
   fotoSeleccionada: string | ArrayBuffer | null = null;
   archivoFoto: File | null = null;
 
-  // Control de validación
+  // Variables para mostrar errores en campos tocados
   nombreTouched: boolean = false;
   passwordTouched: boolean = false;
 
@@ -31,36 +31,39 @@ export class RegistroPage implements OnInit {
     private alertController: AlertController,
     private menu: MenuController,
     private router: Router,
-    private toastController: ToastController // Inyectamos el ToastController
+    private toastController: ToastController
   ) {}
 
+  // Cierra el menú lateral al iniciar la página
   ngOnInit() {
     this.menu.close("mainMenu");
   }
 
+  // Validación en tiempo real del campo de correo electrónico
   validarEmailTiempoReal() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     this.emailInvalido = !emailRegex.test(this.email);
   }
 
-  /**
-   * Método para registrar usuario.
-   * Incluye validación, almacenamiento local y mensaje con toast.
-   */
+  // Método principal para registrar al usuario
   async registrarse() {
-    const nombreValido = this.nombre.trim().length > 0;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const nombreValido = this.nombre.trim().length > 0; // Valida que el nombre no esté vacío
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Expresión regular para validar email
     const emailValido = emailRegex.test(this.email);
-    const passwordValida = this.password.length >= 6;
+    const passwordLongitudValida = this.password.length >= 6; // Longitud mínima de contraseña
+    const passwordFuerte = this.isStrongPassword(this.password); // Validación avanzada de contraseña
+
     this.emailInvalido = !emailValido;
 
-    if (!nombreValido || !emailValido || !passwordValida) {
+    // Si algún campo no es válido, se muestra una alerta
+    if (!nombreValido || !emailValido || !passwordLongitudValida || !passwordFuerte) {
       const alerta = await this.alertController.create({
         header: 'Campos inválidos',
         message: `
           ${!nombreValido ? '• El nombre es obligatorio.<br>' : ''}
           ${!emailValido ? '• El correo electrónico no es válido.<br>' : ''}
-          ${!passwordValida ? '• La contraseña debe tener al menos 6 caracteres.<br>' : ''}
+          ${!passwordLongitudValida ? '• La contraseña debe tener al menos 6 caracteres.<br>' : ''}
+          ${!passwordFuerte ? '• La contraseña debe contener al menos una letra mayúscula y dos números.<br>' : ''}
         `,
         buttons: ['Aceptar']
       });
@@ -68,14 +71,14 @@ export class RegistroPage implements OnInit {
       return;
     }
 
-    // Guardar datos en localStorage
+    // Si los datos son válidos, se guardan en localStorage
     localStorage.setItem('nombreUsuario', this.nombre);
     localStorage.setItem('emailUsuario', this.email);
     if (this.fotoSeleccionada) {
       localStorage.setItem('fotoUsuario', this.fotoSeleccionada as string);
     }
 
-    // Mostrar toast de éxito
+    // Se muestra un mensaje de éxito con un toast
     const toast = await this.toastController.create({
       message: 'Registrado exitosamente',
       duration: 1000,
@@ -84,12 +87,13 @@ export class RegistroPage implements OnInit {
     });
     await toast.present();
 
-    // Redirigir al Home después del toast
+    // Redirección a la página Home después de un pequeño retraso
     setTimeout(() => {
       this.router.navigate(['/home']);
-    }, 1000); // Esperamos que el toast termine antes de redirigir
+    }, 1000);
   }
 
+  // Método para activar el input de selección de foto
   cambiarFoto() {
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     if (fileInput) {
@@ -97,16 +101,17 @@ export class RegistroPage implements OnInit {
     }
   }
 
+  // Método para eliminar la foto seleccionada
   eliminarFoto() {
     this.fotoSeleccionada = null;
     this.archivoFoto = null;
   }
 
+  // Método que se ejecuta cuando el usuario selecciona una imagen
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       this.archivoFoto = input.files[0];
-
       const reader = new FileReader();
       reader.onload = () => {
         this.fotoSeleccionada = reader.result;
@@ -115,7 +120,25 @@ export class RegistroPage implements OnInit {
     }
   }
 
+  // Método para navegar a la página de login
   irALogin() {
     this.router.navigate(['/login']);
+  }
+
+  // Método que valida si una contraseña es fuerte
+  // Debe contener al menos una mayúscula y dos dígitos
+  isStrongPassword(password: string): boolean {
+    let digitCount = 0;
+    let hasUppercase = false;
+
+    for (let ch of password) {
+      if (!isNaN(parseInt(ch))) {
+        digitCount++;
+      } else if (ch === ch.toUpperCase() && ch !== ch.toLowerCase()) {
+        hasUppercase = true;
+      }
+    }
+
+    return hasUppercase && digitCount >= 2;
   }
 }
