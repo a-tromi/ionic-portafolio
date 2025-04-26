@@ -1,77 +1,225 @@
-/*
- * App Global CSS
- * ----------------------------------------------------------------------------
- * Put style rules here that you want to apply globally. These styles are for
- * the entire app and not just one component. Additionally, this file can be
- * used as an entry point to import other CSS/Sass files to be included in the
- * output CSS.
- * For more information on global stylesheets, visit the documentation:
- * https://ionicframework.com/docs/layout/global-stylesheets
- */
+// ------------------------------------------------------------------------------------------------
+// Global SCSS para app Ionic + Angular Material
+// ------------------------------------------------------------------------------------------------
 
-/* Core CSS required for Ionic components to work properly */
+// 📌 Material theming primero (debe estar antes de todo)
+@use '@angular/material' as mat;
+
+// 📌 Tema Angular Material
+html {
+  @include mat.theme((
+    color: (
+      theme-type: light,
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+// ------------------------------------------------------------------------------------------------
+// Ionic Core CSS
+// ------------------------------------------------------------------------------------------------
+
+/* Core CSS requerido para que Ionic funcione bien */
 @import "@ionic/angular/css/core.css";
 
-/* Basic CSS for apps built with Ionic */
+/* Estilos básicos de Ionic */
 @import "@ionic/angular/css/normalize.css";
 @import "@ionic/angular/css/structure.css";
 @import "@ionic/angular/css/typography.css";
 @import "@ionic/angular/css/display.css";
 
-/* Optional CSS utils that can be commented out */
+/* Utilidades opcionales */
 @import "@ionic/angular/css/padding.css";
 @import "@ionic/angular/css/float-elements.css";
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+/* Modo oscuro */
 @import "@ionic/angular/css/palettes/dark.system.css";
 
+// ------------------------------------------------------------------------------------------------
+// Estilos globales personalizados
+// ------------------------------------------------------------------------------------------------
+
+/* Ajustes generales */
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* Ion-header y toolbar transparente */
 ion-header {
-    --background: transparent; /* Fondo transparente */
-    --ion-toolbar-background: transparent; /* Fondo transparente para la toolbar */
-    --ion-toolbar-border-color: transparent; /* Elimina el borde */
-  }
-
-  /*
-  ion-content {
-    --background: #d9e4d7;
-    --color: #fff;
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
-    }
-  */
-
+  --background: transparent;
+  --ion-toolbar-background: transparent;
+  --ion-toolbar-border-color: transparent;
+}
 
 ion-header,
-  ion-toolbar,
-  ion-buttons,
-  app-company-name {
-    color: #324D3E; /* Ajusta el color del texto o íconos a darkblue */
-  }
+ion-toolbar,
+ion-buttons,
+app-company-name {
+  color: #324D3E; /* Verde oscuro elegante */
+}
 
-  ion-header,
-  ion-toolbar {
-    --ion-toolbar-border-color: transparent; /* Quita el borde */
-    --background: transparent;               /* Hace transparente la barra */ 
-  }
- 
-  .header-md{
-    -webkit-box-shadow: none !important; /* Elimina la sombra */
-    box-shadow: none !important; /* Elimina la sombra */
-  }
+/* Quitar sombra en header en modo Android (MD design) */
+.header-md {
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+}
 
-  .title_tab h2 {
-    text-align: center;
-    color: #324D3E;
-  }
+/* Títulos en tabs */
+.title_tab h2 {
+  text-align: center;
+  color: #284336;
+}
+
+/* Ion-content podría tener un fondo si quieres */
+/*
+ion-content {
+  --background: linear-gradient(to bottom right, #e6f4e9, #f9fff8); 
+  --color: #2d572c;
+}
+*/
+// ------------------------------------------------------------------------------------------------
+// Mejoras de diseño general
+// ------------------------------------------------------------------------------------------------
+
+/* Suavizar fondo general */
+ion-content {
+  --background: linear-gradient(to bottom right, #e6f4e9, #f9fff8);
+}
+
+/* Tarjetas más bonitas */
+ion-card {
+  border-radius: 20px;
+  box-shadow: 0 6px 18px rgba(50, 77, 62, 0.15);
+  overflow: hidden;
+  background: #ffffff;
+}
+
+/* Botones principales más suaves y amigables */
+ion-button {
+  border-radius: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  --box-shadow: 0 4px 12px rgba(50, 77, 62, 0.2);
+}
+
+/* Inputs visualmente más agradables */
+ion-item {
+  --background: transparent;
+  --highlight-color-focused: #6aa84f;
+  --border-color: #b6d7a8;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+ion-label {
+  color: #4e734e;
+  font-weight: 500;
+}
+
+ion-input, ion-select, ion-textarea {
+  color: #2d572c;
+}
+
+/* Animación sutil al pasar el mouse */
+ion-button:hover {
+  transform: scale(1.03);
+  transition: 0.2s ease-in-out;
+}
+
+// ------------------------------------------------------------------------------------------------
+// Estilos para Tabs (detalle de mascota)
+// ------------------------------------------------------------------------------------------------
+
+ion-tabs {
+  --ion-tab-bar-background: #ffffff;
+  --ion-tab-bar-border: none;
+  background: #ffffff;
+  box-shadow: 0 -2px 8px rgba(50, 77, 62, 0.1);
+}
+
+ion-tab-bar {
+  border-radius: 20px 20px 0 0;
+  padding: 8px 0;
+  margin: 0 8px;
+  background: linear-gradient(to top right, #e6f4e9, #f9fff8);
+}
+
+ion-tab-button {
+  --color-selected: #4e734e;
+  --color: #8ab17d;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+  transition: color 0.3s;
+}
+
+ion-tab-button:hover {
+  color: #2d572c;
+}
+
+ion-tab-button.ion-selected {
+  color: #4e734e;
+}
+
+ion-icon {
+  font-size: 20px;
+}
+
+
+// ------------------------------------------------------------------------------------------------
+// Indicador de tab activo (detalle-mascota)
+// ------------------------------------------------------------------------------------------------
+
+ion-tab-button.ion-selected::after {
+  content: '';
+  display: block;
+  margin: 6px auto 0 auto;
+  width: 30%;
+  height: 4px;
+  background: #4e734e; /* Verde armonioso */
+  border-radius: 2px;
+  transition: all 0.3s ease-in-out;
+}
+
+// ------------------------------------------------------------------------------------------------
+// Animación para el ícono del tab activo (detalle-mascota)
+// ------------------------------------------------------------------------------------------------
+
+ion-tab-button.ion-selected ion-icon {
+  transform: scale(1.2);
+  transition: transform 0.3s ease-in-out;
+}
+
+// ------------------------------------------------------------------------------------------------
+// Sombra elegante para ion-card de formularios
+// ------------------------------------------------------------------------------------------------
+
+ion-card {
+  box-shadow: 0 6px 18px rgba(50, 77, 62, 0.15); /* sombra verde muy sutil */
+  border-radius: 20px; /* bordes redondeados */
+  padding: 1.5rem;
+  background: #BECFBB; /* fondo blanco clásico para formularios */
+  margin: 1.5rem auto; /* centrado */
+  width: 97%;
+  max-width: 420px;
+}
+
+// ------------------------------------------------------------------------------------------------
+// Ajuste especial para el card de Perfil de Mascota
+// ------------------------------------------------------------------------------------------------
+
+.page-detalle-mascota ion-card {
+  max-height: 72vh; /* que no ocupe toda la altura */
+  overflow-y: auto; /* si llega a ser muy largo, scroll interno */
+}

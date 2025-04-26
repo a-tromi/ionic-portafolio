@@ -1,0 +1,209 @@
+/* Estilos generales */
+.perfil-card {
+  margin-top: 20px;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(50, 77, 62, 0.15);
+  background: #D9E4D7; /* Fondo claro */
+}
+
+/* Estilo general para inputs, selects y datetime */
+ion-item ion-label {
+  color: #2d572c; /* Verde oscuro para encabezados */
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+ion-input,
+ion-select,
+ion-datetime {
+  --background: #f0f7f2; /* Fondo suave verde claro */
+  --highlight-color-focused: #2d572c; /* Borde verde oscuro al enfocar */
+  --color: #1c3520; /* Texto ingresado en verde más oscuro */
+  border-radius: 8px;
+  padding: 8px;
+}
+
+
+/* Estilo para encabezados flotantes */
+ion-item ion-label {
+  color: #2d572c;
+}
+
+/* Inputs activos */
+ion-item.ion-focused ion-label {
+  color: #1c3520; /* Verde más oscuro */
+}
+
+/* Inputs y selects */
+/* Placeholder */
+ion-input::part(placeholder),
+ion-select::part(placeholder),
+ion-datetime::part(placeholder) {
+  color: #7ba882; /* Calm Green para placeholders */
+  opacity: 1;
+  font-weight: normal;
+}
+
+/* Placeholder manual extra para ion-datetime si no se renderiza bien */
+ion-datetime::part(native) {
+  color: #1c3520;
+}
+
+/* Selector de especie */
+.especie-selector {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 1.5rem 0;
+
+  .especie-opcion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid #b6d7a8;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    padding: 10px;
+    background-color: #f0f7f2;
+    transition: 0.3s ease;
+
+    img {
+      width: 70%;
+      height: auto;
+      object-fit: cover;
+    }
+
+    span {
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: #2d572c;
+    }
+
+    &.selected {
+      border-color: #324D3E;
+      background-color: #8EA48B;
+    }
+  }
+}
+
+/* Estilos para ion-datetime (Calendario) */
+ion-datetime {
+  --background: #728A6E; /* Fondo verde claro */
+  --border-radius: 2px;
+  --padding: 2px;
+  --color: #2d572c; /* Texto verde oscuro */
+  --ion-text-color: #2d572c;
+  font-size: 0.1rem; /* Tamaño de texto general */
+
+  width: 100%; /* Asegura que el calendario ocupe todo el ancho disponible */
+  max-width: 360px; /* Un máximo razonable para móviles, ajustable */
+
+  margin: 0 auto; /* Centrar el calendario */
+
+  .calendar-day,
+  .calendar-day-active,
+  .calendar-day-today {
+    font-size: 0.75rem !important; /* Más pequeño los días */
+    color: #2d572c !important;
+  }
+
+  .calendar-month {
+    font-size: 1.2rem !important; /* Más claro y más pequeño el mes */
+    font-weight: bold;
+    color: #2d572c;
+    white-space: nowrap; /* Importante: no cortar el nombre del mes */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+  }
+}
+
+
+/* Botones Subir Foto */
+ion-button.guardar-button,
+ion-button.subir-foto {
+  --background: #324D3E; /* Verde oscuro bonito */
+  --background-activated: #1c3520; /* Más oscuro al presionar */
+  --background-hover: #264d26; /* Hover un poco más oscuro */
+  --color: #ffffff; /* Texto blanco */
+  border-radius: 12px;
+  font-weight: bold;
+  text-transform: capitalize;
+  font-size: 1rem;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover manual extra para mayor compatibilidad */
+ion-button.guardar-button:hover,
+ion-button.subir-foto:hover {
+  --background: #1e3d1e;
+}
+
+/* Botones Cambiar y Eliminar foto */
+.foto-actions ion-button {
+  font-size: 0.9rem;
+}
+
+/* Foto mascota */
+.foto-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 1.5rem;
+
+  .foto-preview {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #2d572c;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .foto-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 1rem;
+  }
+}
+
+/* Ajustes del logo en el header */
+ion-header {
+  --background: transparent;
+  --ion-toolbar-background: transparent;
+  --ion-toolbar-border-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 110px;
+  padding: 0;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.logo-container img.logo {
+  width: 120px;
+  max-width: 140px;
+  height: auto;
+  object-fit: contain;
+  margin: 0 auto;
+  animation: float 4s ease-in-out infinite;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* Animación flotante del logo */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
