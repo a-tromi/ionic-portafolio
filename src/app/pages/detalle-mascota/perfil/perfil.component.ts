@@ -3,7 +3,9 @@ import { IonicModule, ToastController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';        
+import { MatNativeDateModule } from '@angular/material/core';
+import { MascotasService } from 'src/app/services/mascotas.service'; // Importar servicio de mascotas
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-perfil',
@@ -13,7 +15,7 @@ import { MatNativeDateModule } from '@angular/material/core';
     FormsModule,
     CommonModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
   ],
   templateUrl: './perfil.component.html',
   styleUrls: ['./perfil.component.scss']
@@ -28,15 +30,19 @@ export class PerfilComponent {
   fechaNacimiento: string = '';
   chip: string = '';
 
-  // Control de fecha
+  // 📅 Control de fecha
   today: Date = new Date();
   edadCalculada: string = '';
 
-  // Control de foto
+  // 📸 Control de foto
   fotoSeleccionada: string | ArrayBuffer | null = null;
   archivoFoto: File | null = null;
 
-  constructor(private toastController: ToastController) {}
+  constructor(
+    private toastController: ToastController,
+    private mascotasService: MascotasService, // ✅ Inyectamos el servicio
+    private router: Router
+  ) {}
 
   // -----------------------------------------------
   // Métodos de formulario
@@ -55,21 +61,17 @@ export class PerfilComponent {
 
   seleccionarFecha(event: any) {
     this.fechaNacimiento = event.value;
-    this.actualizarEdad(); // Llamamos para actualizar la edad al seleccionar fecha
+    this.actualizarEdad();
   }
 
-  onDatePickerClosed() {
-    // No hacemos nada al cerrar
-  }
+  onDatePickerClosed() {}
 
   actualizarEdad() {
-    // Este método actualiza la edad calculada
     this.edadCalculada = this.calcularEdad();
   }
 
   calcularEdad(): string {
     if (!this.fechaNacimiento) return '';
-
     const nacimiento = new Date(this.fechaNacimiento);
     const hoy = new Date();
     let años = hoy.getFullYear() - nacimiento.getFullYear();
@@ -115,6 +117,10 @@ export class PerfilComponent {
     }
   }
 
+  // -----------------------------------------------
+  // Método guardarPerfil mejorado
+  // -----------------------------------------------
+
   async guardarPerfil() {
     if (!this.especie) {
       const toast = await this.toastController.create({
@@ -127,22 +133,35 @@ export class PerfilComponent {
       return;
     }
 
-    const toast = await this.toastController.create({
-      message: '🐾 Mascota guardada exitosamente',
-      duration: 2000,
-      color: 'success',
-      position: 'bottom'
-    });
-    await toast.present();
-
-    console.log('Perfil guardado:', {
+    // Creamos el objeto de mascota a guardar
+    const nuevaMascota = {
       especie: this.especie,
       nombre: this.nombre,
       raza: this.raza,
       genero: this.genero,
       fechaNacimiento: this.fechaNacimiento,
+      edad: this.edadCalculada,
       chip: this.chip,
       foto: this.fotoSeleccionada
-    });
+    };
+
+    // Guardar en localStorage
+  const mascotasGuardadas = JSON.parse(localStorage.getItem('mascotas') || '[]');
+  mascotasGuardadas.push(nuevaMascota);
+  localStorage.setItem('mascotas', JSON.stringify(mascotasGuardadas));
+
+  // Mostrar toast de éxito
+  const toast = await this.toastController.create({
+    message: '🐾 Mascota guardada exitosamente',
+    duration: 1500,
+    color: 'success',
+    position: 'bottom'
+  });
+  await toast.present();
+
+  // Redirigir a la pantalla de mascotas
+  setTimeout(() => {
+    this.router.navigate(['/mascotas']);
+  }, 500); // Esperar un poco para que se vea el toast
   }
 }

@@ -223,3 +223,37 @@ ion-card {
   max-height: 72vh; /* que no ocupe toda la altura */
   overflow-y: auto; /* si llega a ser muy largo, scroll interno */
 }
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px; /* Más bajo */
+}
+
+.logo-container img.logo-header {
+  width: 100px;
+  height: auto;
+  object-fit: contain;
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Animación opcional */
+@keyframes float {
+  0% { transform: translatey(0px); }
+  50% { transform: translatey(-5px); }
+  100% { transform: translatey(0px); }
+}
+
+.title {
+  text-align: center;
+  font-weight: bold;
+  color: #2d572c; /* Verde oscuro */
+  margin-top: 1rem;
+}
+
+.sin-mascotas {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1.1rem;
+}

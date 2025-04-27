@@ -1,0 +1,41 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Mis Mascotas</ion-title>    
+    <ion-buttons slot="end">
+      <ion-menu-button menu="mainMenu"></ion-menu-button> <!-- Botón de menú ☰ -->
+    </ion-buttons>        
+  </ion-toolbar>  
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding"> 
+
+  <div class="logo-container">
+    <img src="../../assets/img/patitasPet-logo.png" alt="Logo" class="logo-header">
+  </div>
+
+  <div *ngIf="mascotas.length === 0" class="no-mascotas">
+    <img src="assets/img/no-mascotas.png" alt="Sin mascotas" class="no-mascotas-img">
+    <h2>No tienes mascotas registradas</h2>
+    <p>¡Agrega una para empezar! 🐾</p>
+  </div>
+
+  <ion-list *ngIf="mascotas.length > 0">
+    <ion-item *ngFor="let mascota of mascotas">
+      <ion-avatar slot="start">
+        <img [src]="mascota.foto" alt="Foto mascota">
+      </ion-avatar>
+      <ion-label>
+        <h2>{{ mascota.nombre }}</h2>
+        <p>{{ mascota.especie }} | {{ calcularEdad(mascota.fechaNacimiento) }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!-- Botón flotante para agregar mascota ➕ -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="success" (click)="irAAgregarMascota()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

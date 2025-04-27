@@ -1,69 +1,28 @@
-ion-menu {
-  --width: 260px;
-  background: linear-gradient(135deg, #d9ead3, #b6d7a8); // Gradiente verde suave
-
-  ion-header {
-    ion-toolbar {
-      --background: #6a8a62; // Verde más intenso
-      --color: #ffffff;
-      text-align: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-
-      ion-title {
-        font-weight: bold;
-        font-size: 1.3rem;
-        letter-spacing: 0.5px;
-      }
-    }
-  }
-
-  ion-content {
-    --background: transparent;
-    padding-top: 1rem;
-
-    ion-list {
-      padding: 0 0.5rem;
-
-      ion-item {
-        --background: transparent;
-        --color: #2d572c;
-        border-radius: 12px;
-        margin: 0.4rem 0.5rem;
-        font-weight: 500;
-        font-size: 1rem;
-        transition: background-color 0.3s ease;
-
-        ion-icon {
-          color: #4a7c59;
-          font-size: 1.3rem;
-        }
-
-        ion-label {
-          color: #2d572c;
-        }
-
-        &:hover,
-        &.item-has-focus,
-        &.item-selected {
-          background-color: rgba(106, 168, 79, 0.2);
-          transform: scale(1.02);
-        }
-      }
-
-      ion-item:last-child {
-        ion-label,
-        ion-icon {
-          color: #de5546 !important; // Rojo suave para cerrar sesión
-        }
-
-        &:hover {
-          background-color: rgba(192, 57, 43, 0.1);
-        }
-      }
-    }
-  }
+/* Fondo general del menú */
+.menu-content {
+  --background: linear-gradient(to bottom right, #e6f4e9, #f9fff8);
 }
 
-ion-router-outlet {
-  --background: #f0fff4;
+/* Título del menú */
+.menu-title {
+  font-weight: bold;
+  color: #2d572c;
+  text-align: center;
+}
+
+/* Ítems del menú */
+.menu-item {
+  --background-hover: #d9ead3; /* Verde muy suave al pasar mouse */
+  --color: #2d572c;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 12px 8px;
+  border-radius: 12px;
+  margin: 6px;
+}
+
+/* Íconos del menú */
+.menu-icon {
+  font-size: 1.4rem;
+  color: #4e734e;
 }

@@ -1,0 +1,93 @@
+/* Ajustes de logo */
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0;
+  
+    img.logo {
+      width: 100px;
+      height: auto;
+      animation: float 4s ease-in-out infinite;
+    }
+  }
+  
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+    100% { transform: translateY(0px); }
+  }
+  
+  /* Estado vacío */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 3rem;
+    text-align: center;
+  
+    .empty-image {
+      width: 200px;
+      margin-bottom: 1rem;
+    }
+  
+    h2 {
+      color: #2d572c;
+      font-weight: bold;
+    }
+  
+    p {
+      color: #7ca982;
+      font-size: 1rem;
+    }
+  }
+  
+  /* Lista de mascotas */
+  .mascotas-list {
+    margin-top: 1rem;
+  }
+  
+  /* Cada tarjeta de mascota */
+  .mascota-card {
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(45, 87, 44, 0.2);
+    overflow: hidden;
+    background-color: #f0f7f2;
+    margin-bottom: 1rem;
+  
+    ion-item {
+      --background: transparent;
+    }
+  
+    ion-label h2 {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #2d572c;
+    }
+  
+    ion-label p {
+      font-size: 0.9rem;
+      color: #7ca982;
+    }
+  }
+  
+  /* Avatar de mascota */
+  .mascota-avatar img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #2d572c;
+  }
+  
+  /* Detalles dentro de la tarjeta */
+  .mascota-details p {
+    margin: 4px 0;
+    font-size: 0.95rem;
+    color: #324d3e;
+  
+    strong {
+      color: #2d572c;
+    }
+  }
+  

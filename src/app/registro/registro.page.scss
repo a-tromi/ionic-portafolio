@@ -46,7 +46,7 @@
   
     ion-card {
       width: 90%;
-      max-width: 380px; // Límite para pantallas grandes
+      max-width: 360px; // Límite para pantallas grandes
       padding: 2rem 1.5rem;
       border-radius: 22px;
       box-shadow: 0 8px 24px rgba(106, 168, 79, 0.25); // Sombra verde suave
@@ -74,7 +74,7 @@
   
       &.invalid {
         border: 1px solid #e06666; // Rojo cuando es inválido
-        border-radius: 10px;
+        border-radius: 110px;
       }
     }
   

@@ -23,7 +23,12 @@ const routes: Routes = [
   {
     path: 'detalle-mascota',
     children: detalleMascotaChildRoutes // ✅ Ahora usamos las rutas hijas que configuramos en detalle-mascota-tabs.routes.ts
-  }
+  },
+  {
+    path: 'mascotas',
+    loadComponent: () => import('./pages/mascotas/mascotas.page').then(m => m.MascotasPage)
+  },
+  
 ];
 
 @NgModule({
