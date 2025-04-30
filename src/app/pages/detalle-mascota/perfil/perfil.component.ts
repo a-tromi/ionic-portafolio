@@ -1,81 +1,94 @@
 import { Component } from '@angular/core';
-import { IonicModule, ToastController } from '@ionic/angular';
-import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MascotasService } from 'src/app/services/mascotas.service'; // Importar servicio de mascotas
+import { FormsModule } from '@angular/forms';
+import { LoadingController } from '@ionic/angular';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-perfil',
   standalone: true,
-  imports: [
-    IonicModule,
-    FormsModule,
-    CommonModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-  ],
+  selector: 'app-perfil',
   templateUrl: './perfil.component.html',
-  styleUrls: ['./perfil.component.scss']
+  styleUrls: ['./perfil.component.scss'],
+  imports: [IonicModule, CommonModule, FormsModule]
 })
 export class PerfilComponent {
-
-  // 🐾 Datos de la mascota
-  especie: string = '';
   nombre: string = '';
+  especie: string = '';
   raza: string = '';
   genero: string = '';
   fechaNacimiento: string = '';
+  edadCalculada: string | null = null;
   chip: string = '';
-
-  // 📅 Control de fecha
-  today: Date = new Date();
-  edadCalculada: string = '';
-
-  // 📸 Control de foto
   fotoSeleccionada: string | ArrayBuffer | null = null;
-  archivoFoto: File | null = null;
+
+  mascotaIndex: number = -1;
+  today: string = new Date().toISOString();
 
   constructor(
-    private toastController: ToastController,
-    private mascotasService: MascotasService, // ✅ Inyectamos el servicio
-    private router: Router
+    private route: ActivatedRoute,
+    private router: Router,
+    private loadingController: LoadingController
   ) {}
 
-  // -----------------------------------------------
-  // Métodos de formulario
-  // -----------------------------------------------
+  ionViewWillEnter() {
+    const idParam = this.route.snapshot.paramMap.get('id');
 
-  seleccionarEspecie(valor: string) {
-    this.especie = valor;
-  }
+    if (idParam === 'nueva') {
+      // 🟢 Formulario vacío si se va a crear nueva mascota
+      this.resetFormulario();
+    } else {
+      // 🔵 Modo edición
+      this.mascotaIndex = parseInt(idParam!, 10);
+      const mascotasGuardadas = JSON.parse(localStorage.getItem('mascotas') || '[]');
+      const mascota = mascotasGuardadas[this.mascotaIndex];
 
-  abrirDatePicker() {
-    const dateInput = document.querySelector('input[matInput]') as HTMLInputElement;
-    if (dateInput) {
-      dateInput.focus();
+      if (mascota) {
+        this.nombre = mascota.nombre || '';
+        this.especie = mascota.especie || '';
+        this.raza = mascota.raza || '';
+        this.genero = mascota.genero || '';
+        this.fechaNacimiento = mascota.fechaNacimiento || '';
+        this.chip = mascota.chip || '';
+        this.fotoSeleccionada = mascota.foto || null;
+
+        if (this.fechaNacimiento) {
+          this.actualizarEdad();
+        }
+      }
     }
   }
 
-  seleccionarFecha(event: any) {
-    this.fechaNacimiento = event.value;
-    this.actualizarEdad();
+  // 🔄 Limpiar campos del formulario
+  resetFormulario() {
+    this.mascotaIndex = -1;
+    this.nombre = '';
+    this.especie = '';
+    this.raza = '';
+    this.genero = '';
+    this.fechaNacimiento = '';
+    this.chip = '';
+    this.fotoSeleccionada = null;
+    this.edadCalculada = null;
   }
 
-  onDatePickerClosed() {}
-
+  // 🧮 Cálculo de edad desde fecha de nacimiento
   actualizarEdad() {
-    this.edadCalculada = this.calcularEdad();
-  }
+    if (!this.fechaNacimiento) {
+      this.edadCalculada = null;
+      return;
+    }
 
-  calcularEdad(): string {
-    if (!this.fechaNacimiento) return '';
-    const nacimiento = new Date(this.fechaNacimiento);
     const hoy = new Date();
+    const nacimiento = new Date(this.fechaNacimiento);
+
     let años = hoy.getFullYear() - nacimiento.getFullYear();
     let meses = hoy.getMonth() - nacimiento.getMonth();
+
+    if (hoy.getDate() < nacimiento.getDate()) {
+      meses--;
+    }
 
     if (meses < 0) {
       años--;
@@ -83,14 +96,60 @@ export class PerfilComponent {
     }
 
     if (años <= 0 && meses > 0) {
-      return `${meses} meses`;
-    } else if (años === 1 && meses === 0) {
-      return `1 año`;
-    } else if (años > 1 && meses === 0) {
-      return `${años} años`;
+      this.edadCalculada = `${meses} ${meses === 1 ? 'mes' : 'meses'}`;
+    } else if (años > 0 && meses === 0) {
+      this.edadCalculada = `${años} ${años === 1 ? 'año' : 'años'}`;
+    } else if (años > 0 && meses > 0) {
+      this.edadCalculada = `${años} ${años === 1 ? 'año' : 'años'} y ${meses} ${meses === 1 ? 'mes' : 'meses'}`;
     } else {
-      return `${años} años y ${meses} meses`;
+      this.edadCalculada = 'No calculada';
     }
+  }
+
+  // 💾 Guardar o actualizar mascota en localStorage
+  async guardarPerfil() {
+    const loading = await this.loadingController.create({
+      message: 'Guardando cambios...',
+      spinner: 'crescent',
+      duration: 2000
+    });
+
+    await loading.present();
+
+    const mascotasGuardadas = JSON.parse(localStorage.getItem('mascotas') || '[]');
+
+    const nuevaMascota = {
+      nombre: this.nombre,
+      especie: this.especie,
+      raza: this.raza,
+      genero: this.genero,
+      fechaNacimiento: this.fechaNacimiento,
+      chip: this.chip,
+      foto: this.fotoSeleccionada
+    };
+
+    if (this.mascotaIndex >= 0 && this.mascotaIndex < mascotasGuardadas.length) {
+      // ✏️ Editar
+      mascotasGuardadas[this.mascotaIndex] = nuevaMascota;
+    } else {
+      // 🐾 Nueva
+      mascotasGuardadas.push(nuevaMascota);
+    }
+
+    localStorage.setItem('mascotas', JSON.stringify(mascotasGuardadas));
+
+    await loading.dismiss();
+
+    const toast = document.createElement('ion-toast');
+    toast.message = 'Perfil actualizado exitosamente';
+    toast.duration = 1500;
+    toast.color = 'success';
+    document.body.appendChild(toast);
+    await toast.present();
+
+    setTimeout(() => {
+      this.router.navigate(['/mascotas']);
+    }, 1000);
   }
 
   cambiarFoto() {
@@ -102,66 +161,20 @@ export class PerfilComponent {
 
   eliminarFoto() {
     this.fotoSeleccionada = null;
-    this.archivoFoto = null;
   }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
-      this.archivoFoto = input.files[0];
       const reader = new FileReader();
       reader.onload = () => {
         this.fotoSeleccionada = reader.result;
       };
-      reader.readAsDataURL(this.archivoFoto);
+      reader.readAsDataURL(input.files[0]);
     }
   }
 
-  // -----------------------------------------------
-  // Método guardarPerfil mejorado
-  // -----------------------------------------------
-
-  async guardarPerfil() {
-    if (!this.especie) {
-      const toast = await this.toastController.create({
-        message: '🐾 Por favor selecciona la especie',
-        duration: 2000,
-        color: 'warning',
-        position: 'bottom'
-      });
-      await toast.present();
-      return;
-    }
-
-    // Creamos el objeto de mascota a guardar
-    const nuevaMascota = {
-      especie: this.especie,
-      nombre: this.nombre,
-      raza: this.raza,
-      genero: this.genero,
-      fechaNacimiento: this.fechaNacimiento,
-      edad: this.edadCalculada,
-      chip: this.chip,
-      foto: this.fotoSeleccionada
-    };
-
-    // Guardar en localStorage
-  const mascotasGuardadas = JSON.parse(localStorage.getItem('mascotas') || '[]');
-  mascotasGuardadas.push(nuevaMascota);
-  localStorage.setItem('mascotas', JSON.stringify(mascotasGuardadas));
-
-  // Mostrar toast de éxito
-  const toast = await this.toastController.create({
-    message: '🐾 Mascota guardada exitosamente',
-    duration: 1500,
-    color: 'success',
-    position: 'bottom'
-  });
-  await toast.present();
-
-  // Redirigir a la pantalla de mascotas
-  setTimeout(() => {
-    this.router.navigate(['/mascotas']);
-  }, 500); // Esperar un poco para que se vea el toast
+  seleccionarEspecie(tipo: string) {
+    this.especie = tipo;
   }
 }

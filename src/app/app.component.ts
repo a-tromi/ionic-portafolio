@@ -13,10 +13,11 @@ export class AppComponent {
   // Agregamos las páginas del menú
   public appPages = [
     { title: 'Inicio', url: '/home', icon: 'home' },
-    { title: 'Mi Perfil', url: '/perfil', icon: 'person' },
+    { title: 'Mi Perfil', url: '/registro', queryParams: { edit: true }, icon: 'person' },
     { title: 'Mascotas', url: '/mascotas', icon: 'paw' },
     { title: 'Cerrar Sesión', url: '/login', icon: 'log-out' }
   ];
+  
 
   constructor(
     private menu: MenuController,
@@ -29,8 +30,11 @@ export class AppComponent {
     await this.menu.close('mainMenu');
 
     localStorage.removeItem('nombreUsuario');
+    localStorage.removeItem('name'); 
     localStorage.removeItem('emailUsuario');
     localStorage.removeItem('fotoUsuario');
+    localStorage.removeItem('usuarioLogueado');
+
 
     const toast = await this.toastController.create({
       message: 'Sesión cerrada exitosamente.',

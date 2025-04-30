@@ -8,22 +8,32 @@ const routes: Routes = [
     redirectTo: 'login',
     pathMatch: 'full'
   },
+  
   {
     path: 'login',
     loadChildren: () => import('./login/login.module').then(m => m.LoginPageModule)    
   },
+
   {
     path: 'home',
     loadChildren: () => import('./home/home.module').then(m => m.HomePageModule)
   },
+
   {
     path: 'registro',
     loadChildren: () => import('./registro/registro.module').then(m => m.RegistroPageModule)
   },
+
   {
-    path: 'detalle-mascota',
-    children: detalleMascotaChildRoutes // ✅ Ahora usamos las rutas hijas que configuramos en detalle-mascota-tabs.routes.ts
+    path: 'detalle-mascota/:id',
+    children: detalleMascotaChildRoutes
   },
+
+  {
+    path: 'detalle-mascota/nueva',
+    loadComponent: () => import('./pages/detalle-mascota/perfil/perfil.component').then(m => m.PerfilComponent)
+  },  
+
   {
     path: 'mascotas',
     loadComponent: () => import('./pages/mascotas/mascotas.page').then(m => m.MascotasPage)

@@ -9,28 +9,31 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class HomePage implements OnInit {
 
-  nombre: string = '';
+  name: string = '';
   email: string = '';
-  password: string = '';
   foto: string = '../../assets/img/avatar.png';
-  hola: string = 'Hola 👋';
 
   constructor(private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit() {
-    this.nombre = localStorage.getItem('nombreUsuario') || 'Usuario';
+    // Cargar datos desde localStorage
+    const nombreGuardado = localStorage.getItem('nombreUsuario') || localStorage.getItem('name');
+    this.name = nombreGuardado || 'Usuario';
     this.email = localStorage.getItem('emailUsuario') || '';
+
     const fotoGuardada = localStorage.getItem('fotoUsuario');
     if (fotoGuardada) {
       this.foto = fotoGuardada;
     }
   }
 
-  // 👇 Método para cerrar sesión
   cerrarSesion() {
+    // Borra todos los datos de sesión del usuario
     localStorage.removeItem('nombreUsuario');
+    localStorage.removeItem('name'); // por si acaso se usa desde backend
     localStorage.removeItem('emailUsuario');
     localStorage.removeItem('fotoUsuario');
+    localStorage.removeItem('usuarioLogueado');
     this.router.navigate(['/login']);
   }
 }

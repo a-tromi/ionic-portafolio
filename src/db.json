@@ -1,0 +1,11 @@
+{
+    "usuarios": [
+      {
+        "id": 1,
+        "email": "carlos@example.com",
+        "password": "MiContraseñaSegura123",
+        "name": "Carlos Sepulveda"
+      }
+    ]
+  }
+

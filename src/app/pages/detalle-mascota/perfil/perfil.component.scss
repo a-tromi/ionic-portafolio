@@ -1,14 +1,14 @@
 /* Estilos generales */
 .perfil-card {
   margin-top: 20px;
-  border-radius: 16px 20px;
+  border-radius: 10px 20px;
   padding: 20px;
   box-shadow: 0 4px 12px rgba(50, 77, 62, 0.15);
   background: #D9E4D7; /* Fondo claro */
 }
 
 /* Estilo general para inputs, selects y datetime */
-ion-item ion-label {
+ion-item ion-label ion-text {
   color: #2d572c; /* Verde oscuro para encabezados */
   font-weight: bold;
   font-size: 0.95rem;
@@ -34,6 +34,13 @@ ion-item ion-label {
 ion-item.ion-focused ion-label {
   color: #1c3520; /* Verde más oscuro */
 }
+
+ion-item {
+  margin-bottom: 0.25rem;
+  --padding-top: 2px;
+  --padding-bottom: 2px;
+}
+
 
 /* Inputs y selects */
 /* Placeholder */
@@ -207,3 +214,4 @@ ion-header {
   50% { transform: translateY(-6px); }
   100% { transform: translateY(0px); }
 }
+

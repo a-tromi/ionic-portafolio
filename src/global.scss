@@ -257,3 +257,8 @@ ion-card {
   margin-top: 2rem;
   font-size: 1.1rem;
 }
+
+ion-back-button,
+  ion-menu-button {
+  --color: #324D3E; /* Un verde más oscuro, tipo "Calm green" */
+  }

@@ -1,21 +1,22 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Perfil Mascota</ion-title> 
+    <ion-title>Registro Mascota</ion-title>
     <ion-buttons slot="start">
       <ion-menu-button menu="mainMenu"></ion-menu-button>
-    </ion-buttons>    
+    </ion-buttons>
   </ion-toolbar>
   <div class="logo-container">
     <img src="../../assets/img/patitasPet-logo.png" alt="Logo" class="logo-header">
   </div>
 </ion-header>
 
-
-<ion-content fullscreen="true" class="ion-padding" scroll-y="true">  
+<ion-content fullscreen="true" class="ion-padding" scroll-y="true">
   <ion-card class="perfil-card">
     <ion-card-content>
 
-      <!-- 🐾 Selector visual de especie -->
+      <ion-label position="floating">Especie</ion-label>
+
+      <!-- Especie -->
       <div class="especie-selector">
         <div class="especie-opcion" [class.selected]="especie === 'Perro'" (click)="seleccionarEspecie('Perro')">
           <img src="assets/img/perro.png" alt="Perro">
@@ -40,48 +41,40 @@
       </ion-item>
 
       <!-- Género -->
-      <ion-item lines="full">
+      <ion-item>
         <ion-label position="stacked">Género</ion-label>
         <ion-select [(ngModel)]="genero" placeholder="Seleccionar género">
           <ion-select-option value="Macho">♂ Macho</ion-select-option>
           <ion-select-option value="Hembra">♀ Hembra</ion-select-option>
         </ion-select>
-      </ion-item>
+      </ion-item>      
 
-      <!-- Fecha de nacimiento -->
-      <ion-item lines="full">
+      <!-- Fecha nacimiento -->
+      <ion-item>
         <ion-label position="stacked">Fecha de nacimiento</ion-label>
         <ion-datetime
-          [max]="today"
           presentation="date"
           [(ngModel)]="fechaNacimiento"
           (ionChange)="actualizarEdad()"
-          placeholder="Seleccionar fecha"
           valueFormat="dd/MM/yyyy"
-        >
-        </ion-datetime>
+        ></ion-datetime>
       </ion-item>
 
-      <!-- Edad calculada -->
-      <ion-item lines="full">
+      <!-- Edad -->
+      <ion-item>
         <ion-label position="stacked">Edad</ion-label>
-        <ion-text color="success">
+        <ion-text color="primary">
           <strong>{{ edadCalculada || 'No calculada' }}</strong>
         </ion-text>
       </ion-item>
 
-      <!-- Código de microchip -->
-      <ion-item lines="full">
-        <ion-label position="stacked">Número de microchip (opcional)</ion-label>
-        <ion-input
-          [(ngModel)]="chip"
-          maxlength="15"
-          inputmode="numeric"
-          placeholder="Ingrese 15 dígitos"
-        ></ion-input>
+      <!-- Chip -->
+      <ion-item>
+        <ion-label position="floating">Número de microchip (opcional)</ion-label>
+        <ion-input [(ngModel)]="chip" maxlength="15" inputmode="numeric"></ion-input>
       </ion-item>
 
-      <!-- Foto de mascota -->
+      <!-- Foto -->
       <div class="foto-container" *ngIf="fotoSeleccionada; else sinFoto">
         <img [src]="fotoSeleccionada" alt="Foto de la mascota" class="foto-preview" />
         <div class="foto-actions">
@@ -89,18 +82,13 @@
           <ion-button size="small" color="danger" (click)="eliminarFoto()">Eliminar</ion-button>
         </div>
       </div>
-
       <ng-template #sinFoto>
         <ion-button expand="block" (click)="cambiarFoto()">Subir Foto</ion-button>
       </ng-template>
-
       <input type="file" accept="image/*" hidden (change)="onFileSelected($event)" />
 
-      <!-- Botón Guardar Perfil -->
-      <ion-button expand="block" class="guardar-button" (click)="guardarPerfil()">
-        Guardar Perfil
-      </ion-button>
-
+      <!-- Guardar -->
+      <ion-button expand="block" class="guardar-button" (click)="guardarPerfil()">Guardar Perfil</ion-button>
     </ion-card-content>
   </ion-card>
 </ion-content>

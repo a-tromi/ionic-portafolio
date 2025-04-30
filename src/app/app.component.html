@@ -10,9 +10,10 @@
       <ion-list lines="none">
         <ion-menu-toggle auto-hide="true" *ngFor="let p of appPages">
           <ion-item 
-            button 
-            [routerLink]="p.url" 
-            routerDirection="root" 
+            button
+            [routerLink]="p.url"
+            [queryParams]="p.queryParams"
+            routerDirection="root"
             detail="false"
             class="menu-item"
             (click)="p.title === 'Cerrar Sesión' ? cerrarSesion() : null">

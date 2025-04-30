@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { MascotasService } from '../../services/mascotas.service'; // Ruta corregida
 
 @Component({
   selector: 'app-mascotas',
@@ -12,13 +11,9 @@ import { MascotasService } from '../../services/mascotas.service'; // Ruta corre
   imports: [IonicModule, CommonModule]
 })
 export class MascotasPage implements OnInit {
-
   mascotas: any[] = [];
 
-  constructor(
-    private mascotasService: MascotasService,
-    private router: Router
-  ) {}
+  constructor(private router: Router) {}
 
   ngOnInit() {
     this.cargarMascotas();
@@ -28,10 +23,13 @@ export class MascotasPage implements OnInit {
     this.cargarMascotas();
   }
 
+  // Cargar mascotas desde localStorage
   cargarMascotas() {
-    this.mascotas = this.mascotasService.obtenerMascotas();
+    const data = localStorage.getItem('mascotas');
+    this.mascotas = data ? JSON.parse(data) : [];
   }
 
+  // Calcula edad en años y meses desde la fecha de nacimiento
   calcularEdad(fechaNacimiento: string): string {
     if (!fechaNacimiento) return '';
 
@@ -39,6 +37,10 @@ export class MascotasPage implements OnInit {
     const hoy = new Date();
     let años = hoy.getFullYear() - nacimiento.getFullYear();
     let meses = hoy.getMonth() - nacimiento.getMonth();
+
+    if (hoy.getDate() < nacimiento.getDate()) {
+      meses--;
+    }
 
     if (meses < 0) {
       años--;
@@ -56,7 +58,13 @@ export class MascotasPage implements OnInit {
     }
   }
 
+  // Navegar al formulario para agregar nueva mascota
   irAAgregarMascota() {
-    this.router.navigate(['/detalle-mascota']);
+    this.router.navigate(['/detalle-mascota', 'nueva', 'perfil']);
+  }
+
+  // Navegar al formulario de edición con el índice
+  verDetalleMascota(index: number) {
+    this.router.navigate(['/detalle-mascota', index, 'perfil']);
   }
 }

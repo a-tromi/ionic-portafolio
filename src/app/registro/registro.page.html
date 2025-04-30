@@ -1,71 +1,117 @@
+<!-- HEADER con toolbar y botones de navegación -->
 <ion-header [translucent]="true">
   <ion-toolbar>
+    <!-- Botón de retroceso al inicio (home) -->
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
-    <ion-title class="center-title"> Registrate aquí</ion-title>
+    
+    <!-- Título centrado en toolbar -->    
+    <ion-title class="center-title">
+      {{ esEdicion ? 'Edita tus datos' : 'Regístrate aquí' }}
+    </ion-title>   
+    
+    
+    <!-- Botón de menú lateral (menu hamburguesa) -->
     <ion-buttons slot="end">
       <ion-menu-button menu="mainMenu"></ion-menu-button>
     </ion-buttons>    
   </ion-toolbar>
 
+  <!-- Contenedor para el logo debajo del toolbar -->
   <div class="logo-container">
     <img src="../../assets/img/patitasPet-logo.png" alt="Logo" class="logo">
   </div>
 </ion-header>
 
+<!-- CONTENIDO principal de la página -->
 <ion-content [fullscreen]="true">   
   <ion-card>
     <ion-card-content>
-      <!-- Selector de foto -->
+
+      <!-- FOTO DEL USUARIO -->
+      <!-- Si hay una foto seleccionada, la muestra -->
       <div class="foto-container" *ngIf="fotoSeleccionada; else sinFoto">
         <img [src]="fotoSeleccionada" alt="Foto seleccionada" class="foto-preview" />
+        
+        <!-- Acciones sobre la foto -->
         <div class="foto-actions">
           <ion-button size="small" (click)="cambiarFoto()">Cambiar</ion-button>
           <ion-button size="small" color="danger" (click)="eliminarFoto()">Eliminar</ion-button>
         </div>
       </div>
 
+      <!-- Si no hay foto seleccionada, muestra botón para subir -->
       <ng-template #sinFoto>
-        <ion-button expand="block" (click)="cambiarFoto()">Sube tu foto</ion-button>
+        <ion-button expand="block" class="btn-subir-foto" (click)="cambiarFoto()" color="none">
+          Sube tu foto
+        </ion-button>
       </ng-template>
+      
 
+      <!-- Input oculto para seleccionar archivo de imagen -->
       <input type="file" accept="image/*" (change)="onFileSelected($event)" hidden />      
 
-      <!-- Nombre -->
-      <ion-item [class.invalid]="nombre.trim().length === 0 && nombreTouched">
+      <!-- CAMPO NOMBRE -->
+      <!-- Input de nombre, marca error si está vacío y el campo fue tocado -->
+      <ion-item [class.invalid]="name.trim().length === 0 && nombreTouched">
         <ion-label position="floating">Nombre</ion-label>
-        <ion-input [(ngModel)]="nombre" type="text" (ionBlur)="nombreTouched = true"></ion-input>
+        <ion-input [(ngModel)]="name" type="text" (ionBlur)="nombreTouched = true"></ion-input>
       </ion-item>
-      <ion-text color="danger" *ngIf="nombre.trim().length === 0 && nombreTouched">
+      
+      <!-- Mensaje de error de nombre vacío -->
+      <ion-text color="danger" *ngIf="name.trim().length === 0 && nombreTouched">
         <p class="ion-padding-start">El nombre es obligatorio.</p>
       </ion-text>
 
-      <!-- Correo -->
+      <!-- CAMPO CORREO ELECTRÓNICO -->
+      <!-- Input de correo, valida formato en tiempo real -->
       <ion-item [class.invalid]="emailInvalido">
         <ion-label position="floating">Correo electrónico</ion-label>
-        <ion-input type="email" [(ngModel)]="email" (ionInput)="validarEmailTiempoReal()" required></ion-input>
+        <ion-input 
+          type="email"
+          [(ngModel)]="email"
+          [readonly]="esEdicion"
+          [disabled]="esEdicion"
+          (ionInput)="validarEmailTiempoReal()"
+          required>
+          <ion-text color="medium" *ngIf="esEdicion">
+            <p class="ion-padding-start">El correo no se puede modificar.</p>
+          </ion-text>
+          
+        </ion-input>
+
       </ion-item>
+
+      <!-- Mensaje de error de correo inválido -->
       <ion-text color="danger" *ngIf="emailInvalido">
         <p class="ion-padding-start">Correo electrónico inválido.</p>
       </ion-text>
 
-      <!-- Contraseña -->
+      <!-- CAMPO CONTRASEÑA -->
+      <!-- Input de contraseña, marca error si es menor a 6 caracteres -->
       <ion-item [class.invalid]="password.length < 6 && passwordTouched">
         <ion-label position="floating">Contraseña</ion-label>
         <ion-input [(ngModel)]="password" type="password" (ionBlur)="passwordTouched = true"></ion-input>
       </ion-item>
+
+      <!-- Mensaje de error de contraseña corta -->
       <ion-text color="danger" *ngIf="password.length < 6 && passwordTouched">
         <p class="ion-padding-start">La contraseña debe tener al menos 6 caracteres.</p>
       </ion-text>
+
     </ion-card-content>
 
-    <!-- Botón de registro -->
-    <ion-button expand="block" (click)="registrarse()" class="login-button">Registrarse</ion-button>
+    <!-- BOTÓN PRINCIPAL: Registrarse -->
+    <ion-button expand="block" (click)="registrarse()" class="login-button">
+      {{ esEdicion ? 'Guardar cambios' : 'Registrarse' }}
+    </ion-button>
+    
 
-    <!-- Ir al login -->
+    <!-- BOTÓN SECUNDARIO: Ir al login si ya tiene cuenta -->
     <ion-button expand="block" (click)="irALogin()" fill="clear" class="register-button">
       ¿Ya tienes cuenta? Iniciar Sesion
     </ion-button>  
+
   </ion-card>   
 </ion-content>

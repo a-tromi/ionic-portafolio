@@ -65,30 +65,36 @@ export class LoginPage implements OnInit {
       this.mensajeAlerta('El campo de correo no puede estar vacío.');
       return;
     }
-
+  
     if (!this.validaEmail(this.email)) {
       this.mensajeAlerta('El formato de correo no es válido.');
       return;
     }
-
+  
     if (!this.password) {
       this.mensajeAlerta('La contraseña no puede estar vacía.');
       return;
     }
-
-    // Validación de longitud mínima
+  
     if (this.password.trim().length < 6) {
       this.mensajeAlerta('La contraseña debe tener al menos 6 caracteres.');
       return;
     }
-
-    // Nueva validación de seguridad fuerte
+  
     if (!this.esPasswordFuerte(this.password)) {
       this.mensajeAlerta('La contraseña debe contener al menos una letra mayúscula y dos números.');
       return;
     }
-
-    // Si todas las validaciones pasan, se navega al home
+  
+    // 🔒 Guarda en localStorage que el usuario inició sesión
+    localStorage.setItem('usuarioLogueado', 'true');
+  
+    // Opcional: guarda el email para mostrarlo si no se ha guardado aún
+    if (!localStorage.getItem('emailUsuario')) {
+      localStorage.setItem('emailUsuario', this.email);
+    }
+  
+    // Navega al home
     this.navCtrl.navigateForward(['/home'], {
       queryParams: {
         email: this.email,
@@ -96,6 +102,7 @@ export class LoginPage implements OnInit {
       }
     });
   }
+  
 
   // Ir a la página de registro
   registro() {

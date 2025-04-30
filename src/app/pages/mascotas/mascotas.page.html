@@ -1,41 +1,54 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Mis Mascotas</ion-title>    
+    <ion-title>Mis Mascotas</ion-title>
     <ion-buttons slot="end">
-      <ion-menu-button menu="mainMenu"></ion-menu-button> <!-- Botón de menú ☰ -->
-    </ion-buttons>        
-  </ion-toolbar>  
+      <ion-menu-button menu="mainMenu"></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding"> 
+<ion-content [fullscreen]="true" class="ion-padding">
 
   <div class="logo-container">
-    <img src="../../assets/img/patitasPet-logo.png" alt="Logo" class="logo-header">
+    <img src="../../assets/img/patitasPet-logo.png" alt="Logo" class="logo-header" />
   </div>
 
+  <!-- Si no hay mascotas -->
   <div *ngIf="mascotas.length === 0" class="no-mascotas">
-    <img src="assets/img/no-mascotas.png" alt="Sin mascotas" class="no-mascotas-img">
+    <img src="assets/img/no-mascotas.png" alt="Sin mascotas" class="no-mascotas-img" />
     <h2>No tienes mascotas registradas</h2>
     <p>¡Agrega una para empezar! 🐾</p>
   </div>
 
+  <!-- Lista de mascotas -->
   <ion-list *ngIf="mascotas.length > 0">
-    <ion-item *ngFor="let mascota of mascotas">
-      <ion-avatar slot="start">
-        <img [src]="mascota.foto" alt="Foto mascota">
-      </ion-avatar>
-      <ion-label>
-        <h2>{{ mascota.nombre }}</h2>
-        <p>{{ mascota.especie }} | {{ calcularEdad(mascota.fechaNacimiento) }}</p>
-      </ion-label>
-    </ion-item>
+    <ion-card *ngFor="let mascota of mascotas; let i = index" class="mascota-card" (click)="verDetalleMascota(i)">
+      <ion-item lines="none">
+        <ion-avatar slot="start">
+          <img [src]="mascota.foto || 'assets/img/avatar-mascota.png'" />
+        </ion-avatar>
+        <ion-label>
+          <h2><strong>{{ mascota.nombre }}</strong></h2>
+          <ion-badge color="warning">👤 Principal</ion-badge>
+          <p class="raza">{{ mascota.raza || 'Sin raza' }}</p>
+          <div class="info-line">
+            <ion-icon name="male" *ngIf="mascota.genero === 'Macho'" color="primary"></ion-icon>
+            <ion-icon name="female" *ngIf="mascota.genero === 'Hembra'" color="danger"></ion-icon>
+            {{ mascota.genero }}
+            &nbsp;&nbsp;
+            <ion-icon name="paw-outline"></ion-icon> {{ mascota.especie }}
+            &nbsp;&nbsp;
+            <ion-icon name="calendar-outline"></ion-icon> {{ calcularEdad(mascota.fechaNacimiento) }}
+          </div>
+        </ion-label>
+      </ion-item>
+    </ion-card>
   </ion-list>
 
-  <!-- Botón flotante para agregar mascota ➕ -->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <!-- Botón flotante para agregar mascota -->
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
     <ion-fab-button color="success" (click)="irAAgregarMascota()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-
 </ion-content>
