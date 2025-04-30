@@ -14,8 +14,9 @@ import { Router } from '@angular/router';
   imports: [IonicModule, CommonModule, FormsModule]
 })
 export class PerfilComponent {
-  nombre: string = '';
+  modoEdicion: boolean = false;
   especie: string = '';
+  nombre: string = '';  
   raza: string = '';
   genero: string = '';
   fechaNacimiento: string = '';
@@ -33,17 +34,18 @@ export class PerfilComponent {
   ) {}
 
   ionViewWillEnter() {
-    const idParam = this.route.snapshot.paramMap.get('id');
-
+    const idParam = this.route.snapshot.parent?.paramMap.get('id') || '';
+    console.log('Parámetro ID:', idParam);
+  
     if (idParam === 'nueva') {
-      // 🟢 Formulario vacío si se va a crear nueva mascota
+      this.modoEdicion = false;
       this.resetFormulario();
-    } else {
-      // 🔵 Modo edición
-      this.mascotaIndex = parseInt(idParam!, 10);
+    } else if (!isNaN(Number(idParam))) {
+      this.modoEdicion = true;
+      this.mascotaIndex = parseInt(idParam, 10);
       const mascotasGuardadas = JSON.parse(localStorage.getItem('mascotas') || '[]');
       const mascota = mascotasGuardadas[this.mascotaIndex];
-
+  
       if (mascota) {
         this.nombre = mascota.nombre || '';
         this.especie = mascota.especie || '';
@@ -52,13 +54,16 @@ export class PerfilComponent {
         this.fechaNacimiento = mascota.fechaNacimiento || '';
         this.chip = mascota.chip || '';
         this.fotoSeleccionada = mascota.foto || null;
-
+  
         if (this.fechaNacimiento) {
           this.actualizarEdad();
         }
       }
+    } else {
+      console.warn('ID no válido en la URL:', idParam);
+      this.router.navigate(['/mascotas']);
     }
-  }
+  }  
 
   // 🔄 Limpiar campos del formulario
   resetFormulario() {

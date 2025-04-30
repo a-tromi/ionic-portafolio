@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Registro Mascota</ion-title>
+    <ion-title>{{ modoEdicion ? 'Editar Mascota' : 'Registrar Mascota' }}</ion-title>
     <ion-buttons slot="start">
       <ion-menu-button menu="mainMenu"></ion-menu-button>
     </ion-buttons>
@@ -14,7 +14,7 @@
   <ion-card class="perfil-card">
     <ion-card-content>
 
-      <ion-label position="floating">Especie</ion-label>
+      <ion-label position="floating">Especie de tu Mascota</ion-label>
 
       <!-- Especie -->
       <div class="especie-selector">
@@ -87,8 +87,11 @@
       </ng-template>
       <input type="file" accept="image/*" hidden (change)="onFileSelected($event)" />
 
-      <!-- Guardar -->
-      <ion-button expand="block" class="guardar-button" (click)="guardarPerfil()">Guardar Perfil</ion-button>
+      <!-- Boton dinamico para guardar o editar-->
+      <ion-button expand="block" class="guardar-button" (click)="guardarPerfil()">
+        {{ modoEdicion ? 'Guardar Cambios' : 'Guardar Mascota' }}
+      </ion-button>
+      
     </ion-card-content>
   </ion-card>
 </ion-content>
