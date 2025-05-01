@@ -5,7 +5,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LoadingController } from '@ionic/angular';
 import { Router } from '@angular/router';
-
 @Component({
   standalone: true,
   selector: 'app-perfil',
@@ -13,7 +12,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./perfil.component.scss'],
   imports: [IonicModule, CommonModule, FormsModule]
 })
-export class PerfilComponent {
+export class PerfilComponent {  
   modoEdicion: boolean = false;
   especie: string = '';
   nombre: string = '';  
@@ -23,6 +22,14 @@ export class PerfilComponent {
   edadCalculada: string | null = null;
   chip: string = '';
   fotoSeleccionada: string | ArrayBuffer | null = null;
+  selectorAbierto: boolean = false;
+  mostrarSelector: boolean = false;
+
+
+  abrirSelectorFecha() {
+    this.selectorAbierto = true;
+  }
+
 
   mascotaIndex: number = -1;
   today: string = new Date().toISOString();
@@ -78,7 +85,7 @@ export class PerfilComponent {
     this.edadCalculada = null;
   }
 
-  // 🧮 Cálculo de edad desde fecha de nacimiento
+  // Cálculo de edad desde fecha de nacimiento
   actualizarEdad() {
     if (!this.fechaNacimiento) {
       this.edadCalculada = null;
@@ -111,7 +118,7 @@ export class PerfilComponent {
     }
   }
 
-  // 💾 Guardar o actualizar mascota en localStorage
+  // Guardar o actualizar mascota en localStorage
   async guardarPerfil() {
     const loading = await this.loadingController.create({
       message: 'Guardando cambios...',

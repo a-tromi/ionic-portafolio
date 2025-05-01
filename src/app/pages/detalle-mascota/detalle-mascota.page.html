@@ -1,26 +1,27 @@
-<!-- detalle-mascota.page.html -->
-<ion-content [fullscreen]="true">
-  <ion-router-outlet></ion-router-outlet>
+<ion-tabs>
 
-  <ion-tab-bar slot="bottom">
-    <ion-tab-button [routerLink]="['perfil']" routerDirection="forward">
+  <ion-tab-bar slot="bottom" translucent="true">
+    <ion-tab-button tab="perfil">
       <ion-icon name="paw-outline"></ion-icon>
       <ion-label>Perfil</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button [routerLink]="['vacunas']" routerDirection="forward">
+    <ion-tab-button tab="vacunas">
       <ion-icon name="medkit-outline"></ion-icon>
       <ion-label>Vacunas</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button [routerLink]="['desparasitaciones']" routerDirection="forward">
+    <ion-tab-button tab="desparasitaciones">
       <ion-icon name="bug-outline"></ion-icon>
       <ion-label>Desparasitación</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button [routerLink]="['citas-medicas']" routerDirection="forward">
+    <ion-tab-button tab="citas-medicas">
       <ion-icon name="calendar-outline"></ion-icon>
       <ion-label>Citas Médicas</ion-label>
     </ion-tab-button>
   </ion-tab-bar>
-</ion-content>
+
+</ion-tabs>
+
+  

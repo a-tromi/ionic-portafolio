@@ -27,7 +27,6 @@
           <span>Gato</span>
         </div>
       </div>
-
       <!-- Nombre -->
       <ion-item>
         <ion-label position="floating">Nombre</ion-label>
@@ -50,15 +49,37 @@
       </ion-item>      
 
       <!-- Fecha nacimiento -->
-      <ion-item>
-        <ion-label position="stacked">Fecha de nacimiento</ion-label>
-        <ion-datetime
-          presentation="date"
-          [(ngModel)]="fechaNacimiento"
-          (ionChange)="actualizarEdad()"
-          valueFormat="dd/MM/yyyy"
-        ></ion-datetime>
+      <!-- Selector personalizado -->
+      <!-- Fecha de nacimiento personalizada con modal -->
+      <!-- Fecha de nacimiento -->
+      <ion-item button detail="true" (click)="mostrarSelector = true">
+        <ion-label>Fecha de nacimiento</ion-label>
+        <ion-text slot="end" color="primary">
+          {{ fechaNacimiento ? (fechaNacimiento | date:'dd/MM/yyyy') : 'Seleccionar fecha' }}
+        </ion-text>
       </ion-item>
+
+      <ion-datetime
+        *ngIf="mostrarSelector"
+        [(ngModel)]="fechaNacimiento"        
+        (ionChange)="actualizarEdad(); mostrarSelector = false"
+        (ionCancel)="mostrarSelector = false"
+        presentation="date"
+        [showDefaultButtons]="true"
+        [preferWheel]="false"
+        doneText="Listo"
+        cancelText="Cancelar"
+        style="
+          background: #D9E4D7;
+          border-radius: 16px;
+          margin: 12px auto;
+          width: 100%;
+          max-width: 420px;
+          box-shadow: 0 4px 12px rgba(3, 52, 28, 0.1);
+          padding: 16px;
+          display: block;
+        "
+      ></ion-datetime>     
 
       <!-- Edad -->
       <ion-item>
@@ -66,13 +87,7 @@
         <ion-text color="primary">
           <strong>{{ edadCalculada || 'No calculada' }}</strong>
         </ion-text>
-      </ion-item>
-
-      <!-- Chip -->
-      <ion-item>
-        <ion-label position="floating">Número de microchip (opcional)</ion-label>
-        <ion-input [(ngModel)]="chip" maxlength="15" inputmode="numeric"></ion-input>
-      </ion-item>
+      </ion-item>      
 
       <!-- Foto -->
       <div class="foto-container" *ngIf="fotoSeleccionada; else sinFoto">
