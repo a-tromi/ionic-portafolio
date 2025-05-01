@@ -106,6 +106,16 @@
       <ion-button expand="block" class="guardar-button" (click)="guardarPerfil()">
         {{ modoEdicion ? 'Guardar Cambios' : 'Guardar Mascota' }}
       </ion-button>
+
+      <ion-button
+        expand="block"
+        color="danger"
+        *ngIf="modoEdicion"
+        (click)="eliminarMascota()"
+      >
+        Eliminar Mascota
+      </ion-button>
+
       
     </ion-card-content>
   </ion-card>

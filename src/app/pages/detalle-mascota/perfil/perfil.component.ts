@@ -72,7 +72,7 @@ export class PerfilComponent {
     }
   }  
 
-  // 🔄 Limpiar campos del formulario
+  // Limpiar campos del formulario
   resetFormulario() {
     this.mascotaIndex = -1;
     this.nombre = '';
@@ -163,6 +163,30 @@ export class PerfilComponent {
       this.router.navigate(['/mascotas']);
     }, 1000);
   }
+
+  eliminarMascota() {
+    if (this.mascotaIndex >= 0) {
+      const confirm = window.confirm('¿Estás seguro de que deseas eliminar esta mascota?');
+  
+      if (confirm) {
+        const mascotas = JSON.parse(localStorage.getItem('mascotas') || '[]');
+        mascotas.splice(this.mascotaIndex, 1); // Elimina por índice
+        localStorage.setItem('mascotas', JSON.stringify(mascotas));
+  
+        const toast = document.createElement('ion-toast');
+        toast.message = 'Mascota eliminada correctamente';
+        toast.duration = 1500;
+        toast.color = 'danger';
+        document.body.appendChild(toast);
+        toast.present();
+  
+        // Redirigir a la lista de mascotas
+        this.router.navigate(['/mascotas'], { replaceUrl: true });
+      }
+    }
+  }
+  
+  
 
   cambiarFoto() {
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
