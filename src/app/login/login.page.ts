@@ -85,8 +85,8 @@ export class LoginPage implements OnInit {
       this.mensajeAlerta('La contraseña debe contener al menos una letra mayúscula y dos números.');
       return;
     }
-  
-    // 🔒 Guarda en localStorage que el usuario inició sesión
+  //** MARK: localStorage
+    // Guarda en localStorage que el usuario inició sesión
     localStorage.setItem('usuarioLogueado', 'true');
   
     // Opcional: guarda el email para mostrarlo si no se ha guardado aún

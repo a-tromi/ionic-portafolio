@@ -206,10 +206,10 @@ ion-tab-button.ion-selected ion-icon {
 // ------------------------------------------------------------------------------------------------
 
 ion-card {
-  box-shadow: 0 6px 18px rgba(50, 77, 62, 0.15); /* sombra verde muy sutil */
+  box-shadow: 0 6px 18px rgba(201, 227, 212, 0.15); /* sombra verde muy sutil */
   border-radius: 20px; /* bordes redondeados */
   padding: 1.5rem;
-  background: #BECFBB; /* fondo blanco clásico para formularios */
+  background: #8EA48B; /* fondo blanco clásico para formularios */
   margin: 1.5rem auto; /* centrado */
   width: 97%;
   max-width: 420px;
@@ -262,4 +262,5 @@ ion-back-button,
   ion-menu-button {
   --color: #324D3E; /* Un verde más oscuro, tipo "Calm green" */
   }
+
 

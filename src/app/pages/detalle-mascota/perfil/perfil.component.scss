@@ -226,9 +226,7 @@ ion-datetime {
   100% { transform: translateY(0px); }
 }
 
-/* Fondo oscuro para la vista con color verde oscuro */
-:host {
-  --background: #1f2f26; /* Verde oscuro */
-  background-color: #1f2f26;
-  border-radius: 12px;
+.edadCalculada ion-text {
+  color:#324D3E;
+
 }

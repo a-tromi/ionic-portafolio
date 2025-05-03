@@ -47,14 +47,11 @@
           <ion-select-option value="Hembra">♀ Hembra</ion-select-option>
         </ion-select>
       </ion-item>      
-
-      <!-- Fecha nacimiento -->
-      <!-- Selector personalizado -->
-      <!-- Fecha de nacimiento personalizada con modal -->
-      <!-- Fecha de nacimiento -->
+      <!--** MARK: Calendario -->
+      <!-- Fecha nacimiento -->   
       <ion-item button detail="true" (click)="mostrarSelector = true">
         <ion-label>Fecha de nacimiento</ion-label>
-        <ion-text slot="end" color="primary">
+        <ion-text slot="end" color="secondary">
           {{ fechaNacimiento ? (fechaNacimiento | date:'dd/MM/yyyy') : 'Seleccionar fecha' }}
         </ion-text>
       </ion-item>
@@ -84,7 +81,7 @@
       <!-- Edad -->
       <ion-item>
         <ion-label position="stacked">Edad</ion-label>
-        <ion-text color="primary">
+        <ion-text color="secondary">
           <strong>{{ edadCalculada || 'No calculada' }}</strong>
         </ion-text>
       </ion-item>      

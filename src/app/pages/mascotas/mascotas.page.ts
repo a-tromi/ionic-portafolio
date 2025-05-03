@@ -60,7 +60,7 @@ export class MascotasPage implements OnInit {
 
   // Navegar al formulario para agregar nueva mascota
   irAAgregarMascota() {
-    this.router.navigate(['/detalle-mascota', 'nueva']); // ✅ se redirige automáticamente al tab 'perfil'
+    this.router.navigate(['/detalle-mascota', 'nueva']); // se redirige automáticamente al tab 'perfil'
   }
 
   // Navegar al formulario de edición con el índice

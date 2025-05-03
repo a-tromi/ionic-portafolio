@@ -91,3 +91,10 @@ ion-label h2 {
   color: #556b2f;
   margin-bottom: 4px;
 }
+
+/* Fondo oscuro para la vista con color verde oscuro */
+:host {
+  --background: #728A6E; /* Verde oscuro */
+  background-color: #728A6E;
+  border-radius: 12px;
+}

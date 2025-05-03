@@ -40,7 +40,7 @@ export class PerfilComponent {
     private loadingController: LoadingController
   ) {}
 
-  ionViewWillEnter() {
+  ionViewWillEnter() {      
     const idParam = this.route.snapshot.parent?.paramMap.get('id') || '';
     console.log('Parámetro ID:', idParam);
   
@@ -70,7 +70,12 @@ export class PerfilComponent {
       console.warn('ID no válido en la URL:', idParam);
       this.router.navigate(['/mascotas']);
     }
-  }  
+  }
+  
+  ionViewDidEnter() {
+    this.ionViewWillEnter();
+  }
+  
 
   // Limpiar campos del formulario
   resetFormulario() {
@@ -141,10 +146,10 @@ export class PerfilComponent {
     };
 
     if (this.mascotaIndex >= 0 && this.mascotaIndex < mascotasGuardadas.length) {
-      // ✏️ Editar
+      // Editar
       mascotasGuardadas[this.mascotaIndex] = nuevaMascota;
     } else {
-      // 🐾 Nueva
+      // Nueva
       mascotasGuardadas.push(nuevaMascota);
     }
 
