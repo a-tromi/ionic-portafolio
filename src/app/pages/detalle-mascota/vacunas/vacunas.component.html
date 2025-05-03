@@ -1,8 +1,12 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-buttons slot="start">
+    <ion-buttons slot="end">
       <ion-menu-button menu="mainMenu"></ion-menu-button>
     </ion-buttons>
+      <!-- Botón Volver -->
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/mascotas" text="Volver" icon="arrow-back-outline"></ion-back-button>
+      </ion-buttons>
     <div class="logo-container">
       <img src="../../../assets/img/patitasPet-logo.png" alt="Logo" class="logo-header">
     </div>
@@ -10,36 +14,56 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-
-  <!-- 🐾 Título -->
+  <!-- 🐾 Título y descripción -->
   <h2 class="title">Vacunas</h2>
-
-  <!-- Texto introductorio -->
   <ion-text color="primary">
-    <p>Aquí podrás registrar y ver las vacunas de tu mascota. 🩺</p>
+    <p>Aquí podrás ver y registrar las vacunas de tu mascota 💉🐈🐕</p>
   </ion-text>
+<!-- #region --> Index
+  <!-- Lista de vacunas ya registradas -->
+  <div *ngIf="vacunas.length > 0" class="vacuna-lista">
+    <ion-card *ngFor="let vacuna of vacunas; let i = index" class="vacuna-card">
+      <ion-card-header>
+        <ion-card-title class="vacuna-titulo">
+          {{ vacuna.vaccineName }} ({{ vacuna.doseNumber }}/{{ vacuna.totalDoses }})
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p class="vacuna-detalle"><strong>💉 Aplicada:</strong> {{ vacuna.dateGiven | date:'dd/MM/yyyy' }}</p>
+        <p class="vacuna-detalle"><strong>💉 Próxima dosis:</strong> {{ vacuna.nextDueDate | date:'dd/MM/yyyy' }}</p>
+        <p class="vacuna-detalle"><strong>Descripción:</strong> {{ vacuna.description }}</p>
+        <p class="vacuna-detalle"><strong>Veterinario:</strong> {{ vacuna.veterinarianName }}</p>
+        <p class="vacuna-detalle"><strong>Notas:</strong> {{ vacuna.notes }}</p>
+        <p class="vacuna-detalle" *ngIf="vacuna.multiDose">
+          <strong>Dosis múltiple:</strong> Sí
+        </p>
+
+        <ion-button color="danger" size="small" expand="block" (click)="eliminarVacuna(i)">
+          Eliminar
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
 
   <!-- Formulario para registrar nueva vacuna -->
   <ion-card class="form-card">
     <ion-card-header>
-      <ion-card-title>Registrar nueva vacuna</ion-card-title>
+      <ion-card-title>Registrar nueva vacuna 💉</ion-card-title>
     </ion-card-header>
 
     <ion-card-content>
-
-      <!-- Campo: Nombre de la vacuna -->
       <ion-item>
         <ion-label position="floating">Nombre vacuna</ion-label>
         <ion-input [(ngModel)]="nuevaVacuna.vaccineName"></ion-input>
       </ion-item>
 
-      <!-- Campo: Descripción -->
       <ion-item>
         <ion-label position="floating">Descripción</ion-label>
         <ion-input [(ngModel)]="nuevaVacuna.description"></ion-input>
       </ion-item>
-      <!-- **MARK: Calendarios -->
-      <!-- Fecha aplicada (estilo desplegable) -->
+
+      <!-- Fecha aplicada -->
       <ion-item button detail="true" (click)="mostrarCalendarioAplicada = true">
         <ion-label>Fecha aplicada</ion-label>
         <ion-text slot="end" color="secondary">
@@ -54,19 +78,9 @@
         (ionCancel)="mostrarCalendarioAplicada = false"
         presentation="date"
         [showDefaultButtons]="true"
-        [preferWheel]="false"
         doneText="Listo"
         cancelText="Cancelar"
-        style="
-          background: #D9E4D7;
-          border-radius: 16px;
-          margin: 12px auto;
-          width: 100%;
-          max-width: 420px;
-          box-shadow: 0 4px 12px rgba(3, 52, 28, 0.1);
-          padding: 16px;
-          display: block;
-        ">
+        class="custom-datetime">
       </ion-datetime>
 
       <!-- Próxima dosis -->
@@ -84,85 +98,41 @@
         (ionCancel)="mostrarCalendarioProxima = false"
         presentation="date"
         [showDefaultButtons]="true"
-        [preferWheel]="false"
         doneText="Listo"
         cancelText="Cancelar"
-        style="
-          background: #D9E4D7;
-          border-radius: 16px;
-          margin: 12px auto;
-          width: 100%;
-          max-width: 420px;
-          box-shadow: 0 4px 12px rgba(3, 52, 28, 0.1);
-          padding: 16px;
-          display: block;
-        ">
+        class="custom-datetime">
       </ion-datetime>
 
-      <!-- Toggle: Dosis múltiple -->
+      <!-- Detalles de dosis -->
       <ion-item>
         <ion-label>Dosis múltiple</ion-label>
         <ion-toggle [(ngModel)]="nuevaVacuna.multiDose"></ion-toggle>
       </ion-item>
 
-      <!-- Campo: Número de dosis -->
       <ion-item>
         <ion-label position="floating">Número de dosis</ion-label>
         <ion-input type="number" [(ngModel)]="nuevaVacuna.doseNumber"></ion-input>
       </ion-item>
 
-      <!-- Campo: Total de dosis -->
       <ion-item>
         <ion-label position="floating">Total de dosis</ion-label>
         <ion-input type="number" [(ngModel)]="nuevaVacuna.totalDoses"></ion-input>
       </ion-item>
 
-      <!-- Campo: Veterinario -->
       <ion-item>
         <ion-label position="floating">Veterinario</ion-label>
         <ion-input [(ngModel)]="nuevaVacuna.veterinarianName"></ion-input>
       </ion-item>
 
-      <!-- Campo: Notas -->
       <ion-item>
         <ion-label position="floating">Notas</ion-label>
         <ion-textarea [(ngModel)]="nuevaVacuna.notes"></ion-textarea>
       </ion-item>
 
       <!-- Botón para guardar -->
-      <ion-button expand="block" color="secondary" (click)="guardarVacuna()">
+      <ion-button expand="block" color="success" (click)="guardarVacuna()">
         Guardar vacuna
       </ion-button>
-
     </ion-card-content>
   </ion-card>
-
-  <!-- Lista de vacunas registradas -->
-  <div *ngIf="vacunas.length > 0" class="vacuna-lista">
-    <ion-card *ngFor="let vacuna of vacunas; let i = index" class="vacuna-card">
-
-      <ion-card-header>
-        <ion-card-title class="vacuna-titulo">
-          {{ vacuna.vaccineName }} ({{ vacuna.doseNumber }}/{{ vacuna.totalDoses }})
-        </ion-card-title>
-      </ion-card-header>
-
-      <ion-card-content>
-        <p class="vacuna-detalle"><strong>Aplicada:</strong> {{ vacuna.dateGiven | date:'dd/MM/yyyy' }}</p>
-        <p class="vacuna-detalle"><strong>Próxima dosis:</strong> {{ vacuna.nextDueDate | date:'dd/MM/yyyy' }}</p>
-        <p class="vacuna-detalle"><strong>Descripción:</strong> {{ vacuna.description }}</p>
-        <p class="vacuna-detalle"><strong>Veterinario:</strong> {{ vacuna.veterinarianName }}</p>
-        <p class="vacuna-detalle"><strong>Notas:</strong> {{ vacuna.notes }}</p>
-        <p class="vacuna-detalle" *ngIf="vacuna.multiDose">
-          <strong>Dosis múltiple:</strong> Sí
-        </p>
-
-        <!-- Botón para eliminar -->
-        <ion-button color="danger" size="small" expand="block" (click)="eliminarVacuna(i)">
-          Eliminar
-        </ion-button>
-      </ion-card-content>
-
-    </ion-card>
-  </div>
 </ion-content>
