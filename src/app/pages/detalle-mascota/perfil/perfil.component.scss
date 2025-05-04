@@ -208,23 +208,23 @@ ion-datetime {
   }
 }
 
-/* Logo en el header */
-.logo-container {
-  display: flex;
-  justify-content: flex-start;
-  padding-left: 0.5rem;
-
-  .logo-header {
-    max-width: 10%;
+  /* Logo en el header */
+  .logo-container {
+    display: center;
+    justify-content: flex-center;
+    padding-left: 0.5rem;
+  
+    .logo-header {
+      max-width: 15%;
+    }
   }
-}
-
-/* Animación flotante del logo */
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
-  100% { transform: translateY(0px); }
-}
+  
+  /* Animación flotante del logo */
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+    100% { transform: translateY(0px); }
+  }
 
 .edadCalculada ion-text {
   color:#324D3E;

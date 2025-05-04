@@ -1,0 +1,166 @@
+/* === 🎨 Estilo general de la vista de Vacunas === */
+
+/* Fondo general */
+ion-content {
+    --background: #D9E4D7; // Fondo verde claro
+    padding: 16px;
+  }
+  
+  /* Título principal */
+  .title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1c3520; // Verde oscuro
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  
+  /* Texto descriptivo */
+  ion-text {
+    font-size: 1.2rem;
+    color: #2d572c; // Verde medio
+    margin-bottom: 1rem;
+    text-align: center;
+    display: block;
+  }
+
+  ion-text[_ngcontent-ng-c244777334] {
+    font-size: 0.5rem;
+    color: #2d572c;
+    margin-bottom: 1rem;
+    text-align: center;
+    display: block;
+}
+  
+  /* Estilo del título de la tarjeta */
+  ion-card-title {
+    color: #1c3520;
+    font-size: 1rem;
+    font-weight: bold;
+  }
+  
+  /* Tarjeta del formulario */
+  .form-card {
+    background: #8EA48B; // Verde muy claro
+    border-radius: 16px;
+    padding: 1rem;
+    box-shadow: 0 4px 10px rgba(50, 77, 62, 0.1);
+    margin-bottom: 1.5rem;
+  }
+  
+  .cita-card {
+    background-color: #324D3E; // fondo verde claro (puedes cambiarlo)
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 16px;
+    padding: 12px;
+  }
+  
+  .cita-detalle {
+    color: #D9E4D7; // texto más oscuro para mejor contraste
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+  
+  .cita-titulo {
+    font-weight: bold;
+    color: #BECFBB;
+    font-size: 16px;
+  }
+  
+
+  /* Estilo de los elementos del formulario */
+  ion-item {
+    --background: transparent;
+    --inner-padding-top: 6px;
+    --inner-padding-bottom: 6px;
+    --highlight-color-focused: #1c3520;
+    margin-bottom: 0.5rem;
+    border-radius: 10px;
+  }
+
+  ion-item { //Nombre vacuna, Descripción,etc.
+    color: #324D3E;
+    font-size: 1rem;
+    font-weight: bold;
+  }
+
+  
+  /* Estilo de etiquetas (labels) con soporte para floating */
+  ion-label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #1c3520;
+  }
+  
+  /* Campos de entrada con floating label */
+  ion-input,
+  ion-textarea {
+    --color: #1c3520;
+    font-size: 1rem;
+  }
+  
+  /* Select */
+  ion-select {
+    --background: #f2f7f3;
+    --color: #1c3520;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #c2d1c2;
+    width: 100%;
+    margin-top: 6px;
+  }
+  
+  /* Calendario (ion-datetime) */
+  ion-datetime {
+    --background: #f2f7f3;
+    border-radius: 16px;
+    padding: 16px;
+    margin: 12px auto;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 4px 12px rgba(3, 52, 28, 0.1);
+    display: block;
+  }
+  
+ /* Botón guardar */
+ion-button.guardar-button {
+    --background: #324D3E;
+    --background-hover: #3e8e41;
+    --color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 12px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    margin-top: 1.2rem;
+  }
+  
+/* Botón eliminar con espaciado */
+ion-button[color="danger"] {
+  margin-top: 8px;
+}
+
+  
+
+  
+  /* Logo en el header */
+.logo-container {
+    display: center;
+    justify-content: flex-center;
+    padding-left: 0.5rem;
+  
+    .logo-header {
+      max-width: 15%;
+    }
+  }
+  
+  /* Animación flotante del logo */
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+    100% { transform: translateY(0px); }
+  }
+

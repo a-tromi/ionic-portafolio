@@ -1,4 +1,4 @@
-/* === 🎨 Estilo general de la vista de Vacunas === */
+/* === Estilo general de la vista de Vacunas === */
 
 /* Fondo general */
 ion-content {
@@ -120,9 +120,9 @@ ion-button.guardar-button {
       color: #BECFBB;
     }
   
-    /* ✅ Estilo mejorado para las fichas de vacunas */
+    /* Estilo mejorado para las fichas de vacunas */
 .vacuna-card {
-  background-color: #324D3E; // ✅ Verde claro (mejor contraste)
+  background-color: #324D3E; // Verde claro (mejor contraste)
   border-radius: 16px;
   padding: 1rem;
   margin-bottom: 1rem;
@@ -141,13 +141,22 @@ ion-button[color="danger"] {
   margin-top: 8px;
 }
 
+  /* Logo en el header */
+  .logo-container {
+    display: center;
+    justify-content: flex-center;
+    padding-left: 0.5rem;
   
-  /* Logo más pequeño y centrado */
-  .logo-header {
-    width: 70px;
-    height: auto;
-    display: block;
-    margin: 12px auto;
+    .logo-header {
+      max-width: 15%;
+    }
+  }
+  
+  /* Animación flotante del logo */
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+    100% { transform: translateY(0px); }
   }
   
 
