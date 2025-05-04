@@ -1,59 +1,63 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class MascotasService {
 
-  constructor() {}
+  private apiUrl = 'http://localhost:8080/api/pets';
 
-  /**
-   * Agrega una mascota al usuario actual (por su email)
-   */
-  agregarMascota(mascota: any) {
-    const emailUsuario = localStorage.getItem('emailUsuario');
-    if (!emailUsuario) {
-      console.error('❌ No hay usuario logueado para agregar mascota.');
-      return;
-    }
 
-    const mascotasUsuario = this.obtenerMascotasPorUsuario(emailUsuario);
-    mascotasUsuario.push(mascota);
-    localStorage.setItem(`mascotas_${emailUsuario}`, JSON.stringify(mascotasUsuario));
-  }
+  constructor  (private http: HttpClient) {}
 
-  /**
-   * Obtiene las mascotas del usuario actual
-   */
-  obtenerMascotas(): any[] {
-    const emailUsuario = localStorage.getItem('emailUsuario');
-    if (!emailUsuario) {
-      console.error('❌ No hay usuario logueado para obtener mascotas.');
-      return [];
-    }
+  // Agrega una nueva mascota al usuario autenticado (usa el backend)
 
-    return this.obtenerMascotasPorUsuario(emailUsuario);
-  }
+ agregarMascota(mascota: any): Observable<any> {
+   return this.http.post(`${this.apiUrl}`, mascota);
+ }
 
-  /**
-   * Obtiene mascotas de un email específico (uso interno)
-   */
-  private obtenerMascotasPorUsuario(email: string): any[] {
-    const datos = localStorage.getItem(`mascotas_${email}`);
-    if (datos) {
-      return JSON.parse(datos);
-    } else {
-      return [];
-    }
-  }
+ /**
+  * ✅ CAMBIADO
+  * Obtiene las mascotas del usuario autenticado (usa el backend)
+  */
+ obtenerMascotas(): Observable<any[]> {
+   return this.http.get<any[]>(`${this.apiUrl}`);
+ }
 
-  /**
-   * Borra todas las mascotas de un usuario
-   */
-  borrarMascotas() {
-    const emailUsuario = localStorage.getItem('emailUsuario');
-    if (emailUsuario) {
-      localStorage.removeItem(`mascotas_${emailUsuario}`);
-    }
-  }
+ /**
+  * ✅ NUEVO
+  * Obtiene una mascota específica por su ID
+  */
+ obtenerMascotaPorId(id: number): Observable<any> {
+   return this.http.get(`${this.apiUrl}/${id}`);
+ }
+
+ /**
+  * ✅ NUEVO
+  * Agrega una mascota junto con imagen (usa multipart/form-data)
+  */
+ agregarMascotaConImagen(data: FormData): Observable<any> {
+   return this.http.post(`${this.apiUrl}/with-image`, data);
+ }
+
+ /**
+  * ✅ NUEVO
+  * Sube o actualiza la imagen de una mascota existente
+  */
+ subirImagenMascota(petId: number, imagen: File): Observable<any> {
+   const formData = new FormData();
+   formData.append('image', imagen);
+   return this.http.post(`${this.apiUrl}/${petId}/image`, formData);
+ }
+
+ /**
+  * ✅ NUEVO
+  * Obtiene la URL de la imagen de una mascota
+  */
+ obtenerImagenMascota(petId: number): Observable<any> {
+   return this.http.get(`${this.apiUrl}/${petId}/image`);
+ }
 }

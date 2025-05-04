@@ -1,36 +1,77 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+  import { Injectable } from '@angular/core';
+  import { HttpClient } from '@angular/common/http';
+  import { map, Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthService {
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class AuthService {
 
-  private apiUrl = 'http://localhost:3000'; // URL de tu JSON Server
+    private apiUrl = 'http://localhost:8080/api/users'; // ✅ URL base del backend
 
-  constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) {}
 
-  // Método para registrar usuarios
-  register(email: string, password: string, name: string) {
-    return this.http.post(`${this.apiUrl}/usuarios`, {
-      email,
-      password,
-      name
-    });
-  }
+    /**
+     * ✅ Registrar usuario usando POST /api/users/register
+     */
+    register(email: string, password: string, name: string): Observable<any> {
+      const payload = {
+        email,
+        password,
+        name
+      };
+      return this.http.post(`${this.apiUrl}/register`, payload);
+    }
 
-  // Método para login
-  login(email: string, password: string) {
-    return this.http.get<any[]>(`${this.apiUrl}/usuarios?email=${email}&password=${password}`)
-      .pipe(
-        map(usuarios => {
-          if (usuarios.length > 0) {
-            return usuarios[0]; // Usuario encontrado
-          } else {
-            throw new Error('Credenciales inválidas');
+    /**
+     * ✅ Login de usuario usando POST /api/users/login
+     * El backend retorna un UserLoginResponse con { id, name, email, token }
+     */
+    login(email: string, password: string): Observable<any> {
+      const payload = {
+        email,
+        password
+      };
+      return this.http.post(`${this.apiUrl}/login`, payload).pipe(
+        map((res: any) => {
+          // ✅ Guarda el token y datos del usuario si vienen en la respuesta
+          if (res.token) {
+            localStorage.setItem('token', res.token);
+            localStorage.setItem('userName', res.name);
+            localStorage.setItem('userEmail', res.email);
           }
+          return res;
         })
       );
+    }
+
+    /**
+     * ✅ Cerrar sesión eliminando los datos del usuario almacenados
+     */
+    logout(): void {
+      localStorage.removeItem('token');
+      localStorage.removeItem('userName');
+      localStorage.removeItem('userEmail');
+    }
+
+    /**
+     * ✅ Verifica si hay un usuario autenticado
+     */
+    isLoggedIn(): boolean {
+      return !!localStorage.getItem('token');
+    }
+
+    /**
+     * ✅ Devuelve el token actual
+     */
+    getToken(): string | null {
+      return localStorage.getItem('token');
+    }
+
+    /**
+     * ✅ Devuelve el email del usuario autenticado
+     */
+    getUserEmail(): string | null {
+      return localStorage.getItem('userEmail');
+    }
   }
-}
