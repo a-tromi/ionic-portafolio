@@ -17,7 +17,7 @@ ion-content {
   
   /* Texto descriptivo */
   ion-text {
-    font-size: 0.95rem;
+    font-size: 1.3rem;
     color: #2d572c; // Verde medio
     margin-bottom: 1rem;
     text-align: center;
@@ -27,7 +27,7 @@ ion-content {
   /* Estilo del título de la tarjeta */
   ion-card-title {
     color: #1c3520;
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     font-weight: bold;
   }
   
@@ -112,27 +112,35 @@ ion-button.guardar-button {
   /* Lista de vacunas registradas */
   .vacuna-lista {
     margin-top: 1rem;
-  
-    .vacuna-card {
-      background: #3a563d;
-      border-radius: 12px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    }
-  
+  }
+
     .vacuna-titulo {
       font-weight: bold;
-      font-size: 1.1rem;
-      color: #1c3520;
+      font-size: 1.2rem;
+      color: #BECFBB;
     }
   
-    .vacuna-detalle {
-      font-size: 0.9rem;
-      color: #2b4b35;
-      margin-top: 4px;
-    }
-  }
+    /* ✅ Estilo mejorado para las fichas de vacunas */
+.vacuna-card {
+  background-color: #324D3E; // ✅ Verde claro (mejor contraste)
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Texto dentro de la ficha */
+.vacuna-detalle {
+  font-size: 0.95rem;
+  color: #BECFBB; // Texto verde oscuro para contraste
+  margin-bottom: 6px;
+}
+
+/* Botón eliminar con espaciado */
+ion-button[color="danger"] {
+  margin-top: 8px;
+}
+
   
   /* Logo más pequeño y centrado */
   .logo-header {
@@ -142,3 +150,4 @@ ion-button.guardar-button {
     margin: 12px auto;
   }
   
+

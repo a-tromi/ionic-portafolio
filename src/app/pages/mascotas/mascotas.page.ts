@@ -22,14 +22,30 @@ export class MascotasPage implements OnInit {
   ionViewWillEnter() {
     this.cargarMascotas();
   }
-
-  // Cargar mascotas desde localStorage
+  // #region localStorage
+  // Cargar mascotas y sus vacunas desde localStorage
   cargarMascotas() {
     const data = localStorage.getItem('mascotas');
+    const vacunasData = JSON.parse(localStorage.getItem('vacunas') || '{}');
     this.mascotas = data ? JSON.parse(data) : [];
-  }
+  
+    // Agregar el índice como ID de referencia
+    this.mascotas.forEach((mascota, index) => {
+      const vacunas = vacunasData[index] || [];
+  
+      const ultimaVacuna = vacunas.length > 0 ? vacunas[vacunas.length - 1] : null;
+  
+      mascota.vacunaResumen = {
+        total: vacunas.length,
+        ultimaNombre: ultimaVacuna?.vaccineName || null,
+        ultimaFecha: ultimaVacuna?.dateGiven || null
+      };
+  
+      mascota.id = index; // ⬅️ importante si necesitas el ID en otras partes
+    });
+  }  
 
-  // Calcula edad en años y meses desde la fecha de nacimiento
+  // Cálculo de edad desde la fecha de nacimiento
   calcularEdad(fechaNacimiento: string): string {
     if (!fechaNacimiento) return '';
 
@@ -47,25 +63,17 @@ export class MascotasPage implements OnInit {
       meses += 12;
     }
 
-    if (años <= 0 && meses > 0) {
-      return `${meses} meses`;
-    } else if (años === 1 && meses === 0) {
-      return `1 año`;
-    } else if (años > 1 && meses === 0) {
-      return `${años} años`;
-    } else {
-      return `${años} años y ${meses} meses`;
-    }
+    if (años <= 0 && meses > 0) return `${meses} meses`;
+    if (años === 1 && meses === 0) return `1 año`;
+    if (años > 1 && meses === 0) return `${años} años`;
+    return `${años} años y ${meses} meses`;
   }
 
-  // Navegar al formulario para agregar nueva mascota
   irAAgregarMascota() {
-    this.router.navigate(['/detalle-mascota', 'nueva']); // se redirige automáticamente al tab 'perfil'
+    this.router.navigate(['/detalle-mascota', 'nueva']);
   }
 
-  // Navegar al formulario de edición con el índice
   verDetalleMascota(index: number) {
-    this.router.navigate(['/detalle-mascota', index]); // El redirect en rutas nos lleva a /perfil
-
+    this.router.navigate(['/detalle-mascota', index]);
   }
 }

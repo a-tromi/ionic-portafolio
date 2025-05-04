@@ -43,13 +43,15 @@ export class PerfilComponent {
   ionViewWillEnter() {      
     const idParam = this.route.snapshot.parent?.paramMap.get('id') || '';
     console.log('Parámetro ID:', idParam);
-  
+    
     if (idParam === 'nueva') {
       this.modoEdicion = false;
       this.resetFormulario();
     } else if (!isNaN(Number(idParam))) {
       this.modoEdicion = true;
       this.mascotaIndex = parseInt(idParam, 10);
+
+      // #region localStorage
       const mascotasGuardadas = JSON.parse(localStorage.getItem('mascotas') || '[]');
       const mascota = mascotasGuardadas[this.mascotaIndex];
   
@@ -122,7 +124,7 @@ export class PerfilComponent {
       this.edadCalculada = 'No calculada';
     }
   }
-
+  
   // Guardar o actualizar mascota en localStorage
   async guardarPerfil() {
     const loading = await this.loadingController.create({
@@ -132,7 +134,8 @@ export class PerfilComponent {
     });
 
     await loading.present();
-
+    
+    // #region localStorage
     const mascotasGuardadas = JSON.parse(localStorage.getItem('mascotas') || '[]');
 
     const nuevaMascota = {
@@ -152,7 +155,7 @@ export class PerfilComponent {
       // Nueva
       mascotasGuardadas.push(nuevaMascota);
     }
-
+    // #region localStorage
     localStorage.setItem('mascotas', JSON.stringify(mascotasGuardadas));
 
     await loading.dismiss();
@@ -172,7 +175,8 @@ export class PerfilComponent {
   eliminarMascota() {
     if (this.mascotaIndex >= 0) {
       const confirm = window.confirm('¿Estás seguro de que deseas eliminar esta mascota?');
-  
+
+      // #region localStorage  
       if (confirm) {
         const mascotas = JSON.parse(localStorage.getItem('mascotas') || '[]');
         mascotas.splice(this.mascotaIndex, 1); // Elimina por índice

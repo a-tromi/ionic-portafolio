@@ -29,21 +29,35 @@
         </ion-avatar>
         <ion-label>
           <h2><strong>{{ mascota.nombre }}</strong></h2>
-          <ion-badge color="warning">👤 Principal</ion-badge>
+           <ion-icon name="paw-outline"></ion-icon> {{ mascota.especie }}          
           <p class="raza">{{ mascota.raza || 'Sin raza' }}</p>
           <div class="info-line">
             <ion-icon name="male" *ngIf="mascota.genero === 'Macho'" color="primary"></ion-icon>
             <ion-icon name="female" *ngIf="mascota.genero === 'Hembra'" color="danger"></ion-icon>
             {{ mascota.genero }}
             &nbsp;&nbsp;
-            <ion-icon name="paw-outline"></ion-icon> {{ mascota.especie }}
+           
             &nbsp;&nbsp;
             <ion-icon name="calendar-outline"></ion-icon> {{ calcularEdad(mascota.fechaNacimiento) }}
           </div>
+
+          <!-- Vacunas registradas -->
+          <div *ngIf="mascota.vacunaResumen.total > 0" class="vacuna-info">
+            <ion-icon name="medkit-outline" color="success"></ion-icon>
+            <span>
+              {{ mascota.vacunaResumen.total }} vacuna{{ mascota.vacunaResumen.total > 1 ? 's' : '' }} registrad{{ mascota.vacunaResumen.total > 1 ? 'as' : 'a' }}.
+              Última: <strong>{{ mascota.vacunaResumen.ultimaNombre }}</strong> el 
+              {{ mascota.vacunaResumen.ultimaFecha | date:'dd/MM/yyyy' }}.
+            </span>
+          </div>
+
+
         </ion-label>
       </ion-item>
     </ion-card>
   </ion-list>
+
+  
 
   <!-- Botón flotante para agregar mascota -->
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
