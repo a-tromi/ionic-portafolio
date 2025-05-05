@@ -1,8 +1,12 @@
-import { Component, inject } from '@angular/core';
+// src/app/pages/detalle-mascota/vacunas/vacunas.component.ts
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, AlertController } from '@ionic/angular';
+import { IonicModule, AlertController, LoadingController } from '@ionic/angular';
+
+import { VacunasService, Vaccination } from '../../../services/vacunas.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-vacunas',
@@ -11,30 +15,100 @@ import { IonicModule, AlertController } from '@ionic/angular';
   templateUrl: './vacunas.component.html',
   styleUrls: ['./vacunas.component.scss']
 })
-export class VacunasComponent {
-  // 🔗 Inyección del servicio de rutas para obtener parámetros desde la URL
-  route = inject(ActivatedRoute);
+export class VacunasComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private alertCtrl = inject(AlertController);
+  private loadingCtrl = inject(LoadingController);
+  private svc       = inject(VacunasService);
+  private auth      = inject(AuthService);
+  private router    = inject(Router);
 
-  // ID de la mascota actual desde la URL
-  mascotaId!: string;
+  mascotaId!: number;
+  vacunas: Vaccination[] = [];
 
-  // Arreglo de vacunas asociadas a esta mascota
-  vacunas: any[] = [];
-
-  // Controla visibilidad de los selectores de fecha (calendarios)
+  // Formulario
+  nuevaVacuna: Vaccination = this.resetVacuna();
   mostrarCalendarioAplicada = false;
   mostrarCalendarioProxima = false;
 
-  // Objeto modelo para el formulario
-  nuevaVacuna = this.getNuevaVacunaInicial();
+  ngOnInit(): void {
+    // Intentamos leer el parámetro 'id' subiendo dos niveles: 
+    // /detalle-mascota/:id/vacunas
+    let idParam = this.route.snapshot.parent?.parent?.paramMap.get('id');
+    // Si no lo encontramos, probamos en otros niveles:
+    if (!idParam) {
+      idParam =
+        this.route.snapshot.paramMap.get('id') ||
+        this.route.snapshot.parent?.paramMap.get('id');
+    }
 
-  constructor(
-    private alertController: AlertController,
-    private router: Router // Agregado para redirigir al guardar
-  ) {}
+    this.mascotaId = Number(idParam);
+    if (isNaN(this.mascotaId) || this.mascotaId <= 0) {
+      this.showAlert('Error', `ID de mascota inválido: ${idParam}`);
+      return;
+    }
 
-  // Estructura base del formulario (se reutiliza al limpiar)
-  getNuevaVacunaInicial() {
+    console.log('🐾 Mascota ID:', this.mascotaId);
+    console.log('🔑 Token:', this.auth.getAuthHeaders().get('Authorization'));
+
+    this.loadVacunas();
+  }
+
+  private loadVacunas(): void {
+    this.svc.obtenerVacunas(String(this.mascotaId)).subscribe({
+      next: vs => this.vacunas = vs,
+      error: () => this.showAlert('Error', 'No se pudieron cargar las vacunas')
+    });
+  }
+
+  async guardarVacuna(): Promise<void> {
+    const { vaccineName, dateGiven, nextDueDate } = this.nuevaVacuna;
+    if (!vaccineName || !dateGiven) {
+      await this.showAlert('Atención', 'Completa nombre y fecha aplicada');
+      return;
+    }
+
+    const load = await this.loadingCtrl.create({ message: 'Guardando vacuna...' });
+    await load.present();
+
+    console.log('📤 Creando vacuna:', this.nuevaVacuna);
+    console.log('🔑 Token:', this.auth.getAuthHeaders().get('Authorization'));
+
+    this.svc.crearVacuna(String(this.mascotaId), this.nuevaVacuna).subscribe({
+      next: vac => {
+        load.dismiss();
+        this.vacunas.push(vac);
+        this.nuevaVacuna = this.resetVacuna();
+      },
+      error: async err => {
+        load.dismiss();
+        await this.showAlert('Error al guardar vacuna', err.error?.message || 'Fallo inesperado');
+      }
+    });
+  }
+
+  async eliminarVacuna(index: number): Promise<void> {
+    const vac = this.vacunas[index];
+    const alert = await this.alertCtrl.create({
+      header: 'Confirmar eliminación',
+      message: '¿Eliminar esta vacuna?',
+      buttons: [
+        { text: 'Cancelar', role: 'cancel' },
+        {
+          text: 'Eliminar',
+          handler: () => {
+            this.svc.eliminarVacuna(String(this.mascotaId), vac.id!).subscribe({
+              next: () => this.vacunas.splice(index, 1),
+              error: () => this.showAlert('Error', 'No se pudo eliminar la vacuna')
+            });
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  private resetVacuna(): Vaccination {
     return {
       vaccineName: '',
       description: '',
@@ -43,69 +117,13 @@ export class VacunasComponent {
       multiDose: false,
       doseNumber: 1,
       totalDoses: 1,
-      notes: '',
-      veterinarianName: ''
+      veterinarianName: '',
+      notes: ''
     };
   }
 
-  // Al cargar el componente, se obtiene el ID de mascota y sus vacunas
-  ngOnInit() {
-    this.mascotaId = this.route.parent?.snapshot.params['id'];
-    console.log('ID de mascota:', this.mascotaId);
-
-    // #region localStorage
-    const vacunasGuardadas = JSON.parse(localStorage.getItem('vacunas') || '{}');
-    this.vacunas = vacunasGuardadas[this.mascotaId] || [];
-  }
-
-  // Guardar nueva vacuna en memoria y en localStorage
-  guardarVacuna() {
-    const vacunaCopia = { ...this.nuevaVacuna };
-
-    // Agrega la vacuna a la lista local
-    this.vacunas.push(vacunaCopia);
-
-    // Actualiza en localStorage (por ID de mascota)
-    const vacunasGuardadas = JSON.parse(localStorage.getItem('vacunas') || '{}');
-    vacunasGuardadas[this.mascotaId] = this.vacunas;
-    localStorage.setItem('vacunas', JSON.stringify(vacunasGuardadas));
-
-    // Limpia el formulario
-    this.nuevaVacuna = this.getNuevaVacunaInicial();
-
-    console.log('Vacuna guardada:', vacunaCopia);
-
-    // Redirige automáticamente a la lista de mascotas
-    this.router.navigate(['/mascotas']);
-  }
-
-  // Elimina una vacuna con alerta de confirmación
-  async eliminarVacuna(index: number) {
-    const alert = await this.alertController.create({
-      header: 'Confirmar eliminación',
-      message: '¿Estás seguro de que deseas eliminar esta vacuna?',
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          cssClass: 'secondary'
-        },
-        {
-          text: 'Eliminar',
-          handler: () => {
-            // Quita del arreglo local
-            this.vacunas.splice(index, 1);
-
-            // #region localStorage
-            // Actualiza localStorage
-            const vacunasGuardadas = JSON.parse(localStorage.getItem('vacunas') || '{}');
-            vacunasGuardadas[this.mascotaId] = this.vacunas;
-            localStorage.setItem('vacunas', JSON.stringify(vacunasGuardadas));
-          }
-        }
-      ]
-    });
-
-    await alert.present();
+  private async showAlert(header: string, message: string): Promise<void> {
+    const a = await this.alertCtrl.create({ header, message, buttons: ['OK'] });
+    await a.present();
   }
 }
