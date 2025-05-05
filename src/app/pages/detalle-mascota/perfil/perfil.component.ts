@@ -1,10 +1,18 @@
+// src/app/pages/detalle-mascota/perfil/perfil.component.ts
+
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { IonicModule } from '@ionic/angular';
+import { ActivatedRoute, Router } from '@angular/router';
+import {
+  IonicModule,
+  LoadingController,
+  AlertController
+} from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { LoadingController } from '@ionic/angular';
-import { Router } from '@angular/router';
+
+import { MascotasService, Pet } from '../../../services/mascotas.service';
+import { AuthService } from '../../../services/auth.service';
+
 @Component({
   standalone: true,
   selector: 'app-perfil',
@@ -12,108 +20,102 @@ import { Router } from '@angular/router';
   styleUrls: ['./perfil.component.scss'],
   imports: [IonicModule, CommonModule, FormsModule]
 })
-export class PerfilComponent {  
-  modoEdicion: boolean = false;
-  especie: string = '';
-  nombre: string = '';  
-  raza: string = '';
-  genero: string = '';
-  fechaNacimiento: string = '';
-  edadCalculada: string | null = null;
-  chip: string = '';
-  fotoSeleccionada: string | ArrayBuffer | null = null;
-  selectorAbierto: boolean = false;
-  mostrarSelector: boolean = false;
+export class PerfilComponent {
+  modoEdicion = false;
 
-
-  abrirSelectorFecha() {
-    this.selectorAbierto = true;
-  }
-
-
-  mascotaIndex: number = -1;
-  today: string = new Date().toISOString();
+  public especie = '';
+  public nombre = '';
+  public raza = '';
+  public genero = '';
+  public fechaNacimiento = '';
+  public edadCalculada: string | null = null;
+  public fotoSeleccionada: string | ArrayBuffer | null = null;
+  public mostrarSelector = false;
+  private mascotaIndex?: number;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private alertController: AlertController,
+    private svc: MascotasService,
+    private auth: AuthService
   ) {}
 
-  ionViewWillEnter() {      
-    const idParam = this.route.snapshot.parent?.paramMap.get('id') || '';
-    console.log('Parámetro ID:', idParam);
-    
+  ionViewWillEnter() {
+    let idParam = this.route.snapshot.paramMap.get('id');
+    if (!idParam) {
+      idParam = this.route.snapshot.parent?.paramMap.get('id') || '';
+    }
+
     if (idParam === 'nueva') {
       this.modoEdicion = false;
       this.resetFormulario();
     } else if (!isNaN(Number(idParam))) {
       this.modoEdicion = true;
-      this.mascotaIndex = parseInt(idParam, 10);
-
-      // #region localStorage
-      const mascotasGuardadas = JSON.parse(localStorage.getItem('mascotas') || '[]');
-      const mascota = mascotasGuardadas[this.mascotaIndex];
-  
-      if (mascota) {
-        this.nombre = mascota.nombre || '';
-        this.especie = mascota.especie || '';
-        this.raza = mascota.raza || '';
-        this.genero = mascota.genero || '';
-        this.fechaNacimiento = mascota.fechaNacimiento || '';
-        this.chip = mascota.chip || '';
-        this.fotoSeleccionada = mascota.foto || null;
-  
-        if (this.fechaNacimiento) {
-          this.actualizarEdad();
-        }
-      }
+      this.mascotaIndex = Number(idParam);
+      this.cargarMascota(this.mascotaIndex);
     } else {
-      console.warn('ID no válido en la URL:', idParam);
       this.router.navigate(['/mascotas']);
     }
   }
-  
+
   ionViewDidEnter() {
     this.ionViewWillEnter();
   }
-  
 
-  // Limpiar campos del formulario
-  resetFormulario() {
-    this.mascotaIndex = -1;
-    this.nombre = '';
+  private resetFormulario() {
     this.especie = '';
+    this.nombre = '';
     this.raza = '';
     this.genero = '';
     this.fechaNacimiento = '';
-    this.chip = '';
-    this.fotoSeleccionada = null;
     this.edadCalculada = null;
+    this.fotoSeleccionada = null;
   }
 
-  // Cálculo de edad desde fecha de nacimiento
-  actualizarEdad() {
+  private cargarMascota(id: number) {
+    this.svc.obtenerMascotaPorId(id).subscribe({
+      next: pet => {
+        this.nombre = pet.name;
+        this.especie =
+          pet.species === 'PERRO' ? 'Perro' :
+          pet.species === 'GATO'  ? 'Gato'  : '';
+        this.raza = pet.breedName || '';
+        this.genero =
+          pet.gender === 'MACHO'  ? 'Macho' :
+          pet.gender === 'HEMBRA' ? 'Hembra' : '';
+        this.fechaNacimiento = pet.birthdate || '';
+        this.fotoSeleccionada = pet.photoUrl || null;
+        if (this.fechaNacimiento) {
+          this.calcularEdad();
+        }
+      },
+      error: () => {
+        this.alert('Error', 'No se pudo cargar la mascota');
+        this.router.navigate(['/mascotas']);
+      }
+    });
+  }
+
+  public actualizarEdad(): void {
+    this.calcularEdad();
+  }
+
+  public calcularEdad(): void {
     if (!this.fechaNacimiento) {
       this.edadCalculada = null;
       return;
     }
-
     const hoy = new Date();
     const nacimiento = new Date(this.fechaNacimiento);
-
     let años = hoy.getFullYear() - nacimiento.getFullYear();
     let meses = hoy.getMonth() - nacimiento.getMonth();
-
-    if (hoy.getDate() < nacimiento.getDate()) {
-      meses--;
-    }
-
+    if (hoy.getDate() < nacimiento.getDate()) meses--;
     if (meses < 0) {
       años--;
       meses += 12;
     }
-
     if (años <= 0 && meses > 0) {
       this.edadCalculada = `${meses} ${meses === 1 ? 'mes' : 'meses'}`;
     } else if (años > 0 && meses === 0) {
@@ -124,84 +126,69 @@ export class PerfilComponent {
       this.edadCalculada = 'No calculada';
     }
   }
-  
-  // Guardar o actualizar mascota en localStorage
+
   async guardarPerfil() {
     const loading = await this.loadingController.create({
-      message: 'Guardando cambios...',
-      spinner: 'crescent',
-      duration: 2000
+      message: 'Guardando en servidor...',
+      spinner: 'crescent'
     });
-
     await loading.present();
-    
-    // #region localStorage
-    const mascotasGuardadas = JSON.parse(localStorage.getItem('mascotas') || '[]');
 
-    const nuevaMascota = {
-      nombre: this.nombre,
-      especie: this.especie,
-      raza: this.raza,
-      genero: this.genero,
-      fechaNacimiento: this.fechaNacimiento,
-      chip: this.chip,
-      foto: this.fotoSeleccionada
+    const pet: Pet = {
+      name: this.nombre,
+      species:
+        this.especie === 'Perro' ? 'PERRO' :
+        this.especie === 'Gato'  ? 'GATO'  : 'OTRO',
+      breedName: this.raza,
+      gender:
+        this.genero === 'Macho' ? 'MACHO' : 'HEMBRA',
+      birthdate: this.fechaNacimiento,
+      photoUrl: this.fotoSeleccionada as string
     };
 
-    if (this.mascotaIndex >= 0 && this.mascotaIndex < mascotasGuardadas.length) {
-      // Editar
-      mascotasGuardadas[this.mascotaIndex] = nuevaMascota;
-    } else {
-      // Nueva
-      mascotasGuardadas.push(nuevaMascota);
-    }
-    // #region localStorage
-    localStorage.setItem('mascotas', JSON.stringify(mascotasGuardadas));
+    console.log('📤 PETICIÓN =>', {
+      url: this.svc['apiUrl'],
+      headers: this.auth.getAuthHeaders().keys().reduce((o, k) =>
+        ({ ...o, [k]: this.auth.getAuthHeaders().get(k) }), {}),
+      body: pet
+    });
 
-    await loading.dismiss();
+    const op$ = this.modoEdicion && this.mascotaIndex != null
+      ? this.svc.actualizarMascota(this.mascotaIndex, pet)
+      : this.svc.agregarMascota(pet);
 
-    const toast = document.createElement('ion-toast');
-    toast.message = 'Perfil actualizado exitosamente';
-    toast.duration = 1500;
-    toast.color = 'success';
-    document.body.appendChild(toast);
-    await toast.present();
+    op$.subscribe({
+      next: () => {
+        loading.dismiss();
+        this.alert(this.modoEdicion ? 'Cambios guardados' : 'Mascota creada');
+        this.router.navigate(['/mascotas']);
+      },
+      error: err => {
+        loading.dismiss();
+        this.alert(err.error?.message || 'No se pudo guardar');
+      }
+    });
+  }
 
-    setTimeout(() => {
-      this.router.navigate(['/mascotas']);
-    }, 1000);
+  private async alert(message: string, header: string = 'Info') {
+    const a = await this.alertController.create({ header, message, buttons: ['OK'] });
+    await a.present();
   }
 
   eliminarMascota() {
-    if (this.mascotaIndex >= 0) {
-      const confirm = window.confirm('¿Estás seguro de que deseas eliminar esta mascota?');
-
-      // #region localStorage  
-      if (confirm) {
-        const mascotas = JSON.parse(localStorage.getItem('mascotas') || '[]');
-        mascotas.splice(this.mascotaIndex, 1); // Elimina por índice
-        localStorage.setItem('mascotas', JSON.stringify(mascotas));
-  
-        const toast = document.createElement('ion-toast');
-        toast.message = 'Mascota eliminada correctamente';
-        toast.duration = 1500;
-        toast.color = 'danger';
-        document.body.appendChild(toast);
-        toast.present();
-  
-        // Redirigir a la lista de mascotas
+    if (this.mascotaIndex == null) return;
+    if (!confirm('¿Eliminar esta mascota?')) return;
+    this.svc.eliminarMascota(this.mascotaIndex).subscribe({
+      next: () => {
+        this.alert('Mascota eliminada correctamente', 'Éxito');
         this.router.navigate(['/mascotas'], { replaceUrl: true });
-      }
-    }
+      },
+      error: () => this.alert('No se pudo eliminar', 'Error')
+    });
   }
-  
-  
 
   cambiarFoto() {
-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-    if (fileInput) {
-      fileInput.click();
-    }
+    document.querySelector<HTMLInputElement>('input[type="file"]')!.click();
   }
 
   eliminarFoto() {
@@ -210,13 +197,10 @@ export class PerfilComponent {
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.fotoSeleccionada = reader.result;
-      };
-      reader.readAsDataURL(input.files[0]);
-    }
+    if (!input.files?.length) return;
+    const reader = new FileReader();
+    reader.onload = () => this.fotoSeleccionada = reader.result;
+    reader.readAsDataURL(input.files[0]);
   }
 
   seleccionarEspecie(tipo: string) {

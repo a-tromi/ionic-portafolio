@@ -22,26 +22,24 @@
 
   <!-- Lista de mascotas -->
   <ion-list *ngIf="mascotas.length > 0">
-    <ion-card *ngFor="let mascota of mascotas; let i = index" class="mascota-card" (click)="verDetalleMascota(i)">
+    <!-- Quitamos let i = index y usamos mascota.id -->
+    <ion-card *ngFor="let mascota of mascotas" class="mascota-card" (click)="verDetalleMascota(mascota.id)">
       <ion-item lines="none">
         <ion-avatar slot="start">
           <img [src]="mascota.foto || 'assets/img/avatar-mascota.png'" />
         </ion-avatar>
         <ion-label>
           <h2><strong>{{ mascota.nombre }}</strong></h2>
-           <ion-icon name="paw-outline"></ion-icon> {{ mascota.especie }}          
+          <ion-icon name="paw-outline"></ion-icon> {{ mascota.especie }}
           <p class="raza">{{ mascota.raza || 'Sin raza' }}</p>
           <div class="info-line">
             <ion-icon name="male" *ngIf="mascota.genero === 'Macho'" color="primary"></ion-icon>
             <ion-icon name="female" *ngIf="mascota.genero === 'Hembra'" color="danger"></ion-icon>
             {{ mascota.genero }}
             &nbsp;&nbsp;
-           
-            &nbsp;&nbsp;
             <ion-icon name="calendar-outline"></ion-icon> {{ calcularEdad(mascota.fechaNacimiento) }}
           </div>
 
-          <!-- Vacunas registradas -->
           <div *ngIf="mascota.vacunaResumen.total > 0" class="vacuna-info">
             <ion-icon name="medkit-outline" color="success"></ion-icon>
             <span>
@@ -50,14 +48,10 @@
               {{ mascota.vacunaResumen.ultimaFecha | date:'dd/MM/yyyy' }}.
             </span>
           </div>
-
-
         </ion-label>
       </ion-item>
     </ion-card>
   </ion-list>
-
-  
 
   <!-- Botón flotante para agregar mascota -->
   <ion-fab vertical="bottom" horizontal="center" slot="fixed">
