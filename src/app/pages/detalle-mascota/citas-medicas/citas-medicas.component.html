@@ -1,19 +1,88 @@
 <ion-header [translucent]="true">
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-menu-button menu="mainMenu"></ion-menu-button>
-      </ion-buttons>
-      <div class="logo-container">
-        <img src="../../../assets/img/patitasPet-logo.png" alt="Logo" class="logo-header">
-      </div>
-    </ion-toolbar>
-  </ion-header>
-  
-  <ion-content class="ion-padding">
-    <h2 class="title">Citas Médicas</h2>
-  
-    <ion-text color="medium">
-      <p>Agenda las próximas visitas veterinarias aquí. 📅🐾</p>
-    </ion-text>
-  </ion-content>
-  
+  <ion-toolbar>
+    <ion-title>Citas Médicas</ion-title>
+    <ion-buttons slot="end">
+      <ion-menu-button menu="mainMenu"></ion-menu-button>
+    </ion-buttons>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/mascotas" text="Volver" icon="arrow-back-outline"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <div class="logo-container">
+    <img src="../../assets/img/patitasPet-logo.png" alt="Logo" class="logo-header">
+  </div>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Descripción -->
+  <ion-text color="primary">
+    <p>Aquí podrás ver y registrar las citas médicas de tu mascota 🩺📅</p>
+  </ion-text>
+
+  <!-- Lista de citas registradas -->
+  <div *ngIf="citas.length > 0" class="cita-lista">
+    <ion-card *ngFor="let cita of citas; let i = index" class="cita-card">
+      <ion-card-header>
+        <ion-card-title class="cita-titulo">
+          {{ cita.title }}
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <p class="cita-detalle"><strong>📅 Fecha:</strong> {{ cita.appointmentDate | date:'dd/MM/yyyy HH:mm' }}</p>
+        <p class="cita-detalle"><strong>Notas:</strong> {{ cita.notes }}</p>
+
+        <ion-button color="danger" size="small" expand="block" (click)="eliminarCita(i)">
+          Eliminar
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Formulario para registrar nueva cita -->
+  <ion-card class="form-card">
+    <ion-card-header>
+      <ion-card-title>Registrar nueva cita 🩺</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <!-- Título -->
+      <ion-item>
+        <ion-label position="floating">Motivo de la cita</ion-label>
+        <ion-input [(ngModel)]="titulo"></ion-input>
+      </ion-item>
+
+      <!-- Fecha cita -->
+      <ion-item button detail="true" (click)="mostrarSelector = true">
+        <ion-label>📅 Fecha de la cita</ion-label>
+        <ion-text slot="end" color="secondary">
+          {{ fechaCita ? (fechaCita | date:'dd/MM/yyyy HH:mm') : 'Seleccionar fecha' }}
+        </ion-text>
+      </ion-item>
+
+      <ion-datetime
+        *ngIf="mostrarSelector"
+        [(ngModel)]="fechaCita"
+        (ionChange)="mostrarSelector = false"
+        (ionCancel)="mostrarSelector = false"
+        presentation="date-time"
+        [showDefaultButtons]="true"
+        [preferWheel]="false"
+        doneText="Listo"
+        cancelText="Cancelar"
+        class="custom-datetime">
+      </ion-datetime>
+
+      <!-- Notas -->
+      <ion-item>
+        <ion-label position="floating">Notas</ion-label>
+        <ion-textarea [(ngModel)]="notas"></ion-textarea>
+      </ion-item>
+
+      <!-- Botón para guardar -->
+      <ion-button expand="block" class="guardar-button" (click)="guardarCita()">
+        Guardar Cita
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
