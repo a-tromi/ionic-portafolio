@@ -2,8 +2,8 @@ import { Routes } from '@angular/router';
 import { DetalleMascotaPage } from './detalle-mascota.page';
 import { PerfilComponent } from './perfil/perfil.component';
 import { VacunasComponent } from './vacunas/vacunas.component';
-import { DesparasitacionesComponent } from './desparasitaciones/desparasitaciones.component';
 import { CitasMedicasComponent } from './citas-medicas/citas-medicas.component';
+import { RecordatoriosComponent } from './recordatorios/recordatorios.component';
 
 export const routes: Routes = [
   {
@@ -17,15 +17,15 @@ export const routes: Routes = [
       {
         path: 'vacunas',
         component: VacunasComponent,
-      },
-      {
-        path: 'desparasitaciones',
-        component: DesparasitacionesComponent,
-      },
+      },      
       {
         path: 'citas-medicas',
         component: CitasMedicasComponent,
       },
+      {
+        path: 'recordatorios',
+        component: RecordatoriosComponent
+      },      
       {
         path: '',
         redirectTo: 'perfil',
