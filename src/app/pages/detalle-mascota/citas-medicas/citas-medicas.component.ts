@@ -1,9 +1,11 @@
-import { Component, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, AlertController } from '@ionic/angular';
-import { Appointment } from 'src/app/models/appointment.model';
+
+import { Appointment, AppointmentCreateRequest } from 'src/app/models/appointment.model';
+import { AppointmentService } from 'src/app/services/appointment.service';
 
 @Component({
   selector: 'app-citas-medicas',
@@ -12,94 +14,98 @@ import { Appointment } from 'src/app/models/appointment.model';
   templateUrl: './citas-medicas.component.html',
   styleUrls: ['./citas-medicas.component.scss']
 })
-export class CitasMedicasComponent {
-  // Inyección de servicios necesarios
+export class CitasMedicasComponent implements OnInit {
   private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private alertController = inject(AlertController);
+  private alertCtrl = inject(AlertController);
+  private svc = inject(AppointmentService);
 
-  // ID de la mascota desde la ruta
-  mascotaId!: string;
-
-  // Lista de citas guardadas asociadas a la mascota
+  mascotaId!: number;
   citas: Appointment[] = [];
 
-  // Variables del formulario
-  titulo: string = '';
-  fechaCita: string = '';
-  notas: string = '';
-  mostrarSelector: boolean = false;
+  // Campos del formulario
+  titulo = '';
+  fechaCita = '';
+  notas = '';
+  mostrarSelector = false;
 
-  // Inicialización del componente
-  ngOnInit() {
-    this.mascotaId = this.route.parent?.snapshot.params['id'];
-    console.log('ID de mascota:', this.mascotaId);
-    // #region localStorage
-    const citasGuardadas = JSON.parse(localStorage.getItem('citas') || '{}');
-    this.citas = citasGuardadas[this.mascotaId] || [];
-  }
+  ngOnInit(): void {
+    // Intentamos leer el parámetro 'id' subiendo dos niveles: 
+    // /detalle-mascota/:id/citas-medicas
+    let idParam = this.route.snapshot.parent?.parent?.paramMap.get('id');
+    // Si no lo encontramos, probamos otras rutas para mayor robustez
+    if (!idParam) {
+      idParam =
+        this.route.snapshot.paramMap.get('id') ||
+        this.route.snapshot.parent?.paramMap.get('id') ||
+        '0';
+    }
 
-  // Guardar nueva cita
-  guardarCita() {
-    if (!this.titulo || !this.fechaCita) {
-      alert('Por favor completa todos los campos obligatorios');
+    this.mascotaId = Number(idParam);
+    if (isNaN(this.mascotaId) || this.mascotaId <= 0) {
+      this.showAlert('Error', `ID de mascota inválido: ${idParam}`);
       return;
     }
 
-    const nuevaCita: Appointment = {
-      pet: {
-        id: Number(this.mascotaId),
-        name: '',
-        species: '',
-        breed: '',
-        birthDate: ''
-      },
-      title: this.titulo,
-      appointmentDate: new Date(this.fechaCita).toISOString(),
-      notes: this.notas,
-      fcmToken: ''
-    };
-
-    this.citas.push(nuevaCita);
-
-    // #region localStorage
-    const citasGuardadas = JSON.parse(localStorage.getItem('citas') || '{}');
-    citasGuardadas[this.mascotaId] = this.citas;
-    localStorage.setItem('citas', JSON.stringify(citasGuardadas));
-
-    // Limpiar formulario
-    this.titulo = '';
-    this.fechaCita = '';
-    this.notas = '';
-
-    // Redireccionar
-    this.router.navigate(['/mascotas']);
+    this.loadCitas();
   }
 
-  // Eliminar cita con confirmación
-  async eliminarCita(index: number) {
-    const alert = await this.alertController.create({
+  private loadCitas(): void {
+    this.svc.getByPet(this.mascotaId).subscribe({
+      next: appts => this.citas = appts,
+      error: () => this.showAlert('Error', 'No se pudieron cargar las citas')
+    });
+  }
+
+  async guardarCita(): Promise<void> {
+    if (!this.titulo || !this.fechaCita) {
+      await this.showAlert('Atención', 'Completa todos los campos obligatorios');
+      return;
+    }
+
+    const req: AppointmentCreateRequest = {
+      petId: this.mascotaId,
+      title: this.titulo,
+      appointmentDate: new Date(this.fechaCita).toISOString(),
+      notes: this.notas
+    };
+
+    this.svc.create(req).subscribe({
+      next: async () => {
+        await this.showAlert('Éxito', 'Cita creada correctamente');
+        this.titulo = this.fechaCita = this.notas = '';
+        this.loadCitas();
+      },
+      error: async err => {
+        await this.showAlert('Error', err.error?.message || 'No se pudo crear la cita');
+      }
+    });
+  }
+
+  async eliminarCita(appointmentId: string): Promise<void> {
+    const alert = await this.alertCtrl.create({
       header: 'Confirmar eliminación',
-      message: '¿Estás seguro de que deseas eliminar esta cita médica?',
+      message: '¿Eliminar esta cita médica?',
       buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          cssClass: 'secondary'
-        },
+        { text: 'Cancelar', role: 'cancel' },
         {
           text: 'Eliminar',
           handler: () => {
-            this.citas.splice(index, 1);
-            // #region localStorage
-            const citasGuardadas = JSON.parse(localStorage.getItem('citas') || '{}');
-            citasGuardadas[this.mascotaId] = this.citas;
-            localStorage.setItem('citas', JSON.stringify(citasGuardadas));
+            this.svc.delete(appointmentId).subscribe({
+              next: async () => {
+                await this.showAlert('Éxito', 'Cita eliminada');
+                this.loadCitas();
+              },
+              error: () => this.showAlert('Error', 'No se pudo eliminar la cita')
+            });
           }
         }
       ]
     });
-
     await alert.present();
+  }
+
+  private async showAlert(header: string, message: string): Promise<void> {
+    const a = await this.alertCtrl.create({ header, message, buttons: ['OK'] });
+    await a.present();
   }
 }

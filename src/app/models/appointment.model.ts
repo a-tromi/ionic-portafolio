@@ -1,18 +1,23 @@
-
-// Modelo Appointment (cita médica)
-export interface Pet {
+// src/app/models/appointment.model.ts
+export interface Appointment {
+  id?: string;
+  pet: {
     id: number;
-    name: string;
-    species: string;
-    breed: string;
-    birthDate: string;
-  }
-  
-  export interface Appointment {
-    pet: Pet;
-    title: string;
-    appointmentDate: string; // Formato ISO, por ejemplo: "2025-06-10T14:00:00"
-    notes?: string;
-    fcmToken?: string;
-  }
-  
+    name?: string;
+    species?: string;
+    breed?: string;
+    birthDate?: string;
+  };
+  title: string;
+  appointmentDate: string; // ISO 8601
+  notes?: string;
+  fcmToken: string;
+}
+
+// src/app/models/appointment-create-request.model.ts
+export interface AppointmentCreateRequest {
+  petId: number;
+  title: string;
+  appointmentDate: string; // ISO 8601
+  notes: string;
+}
