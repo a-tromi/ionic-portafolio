@@ -48,21 +48,27 @@ ion-content {
     margin-bottom: 1.5rem;
   }
   
-  .cita-card {
+  .recordatorio-card {
     background-color: #284336; // fondo verde claro (puedes cambiarlo)
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-bottom: 16px;
     padding: 12px;
   }
+
+  .recordatorio-card ion-card-title {
+    color: #728A6E;
+    font-size: 1rem;
+    font-weight: bold;
+  }
   
-  .cita-detalle {
+  .nuevoRecordatorio-detalle {
     color: #D9E4D7; // texto más oscuro para mejor contraste
     font-size: 14px;
     margin-bottom: 6px;
   }
   
-  .cita-titulo {
+  .nuevoRecordatorio-titulo {
     font-weight: bold;
     color: #BECFBB;
     font-size: 16px;

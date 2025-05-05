@@ -13,8 +13,9 @@ export const detalleMascotaChildRoutes: Routes = [
     loadComponent: () => import('./vacunas/vacunas.component').then(m => m.VacunasComponent)
   },
   {
-    path: 'desparasitaciones',
-    loadComponent: () => import('./desparasitaciones/desparasitaciones.component').then(m => m.DesparasitacionesComponent)
+    path: 'recordatorios',
+    loadComponent: () => import('./recordatorios/recordatorios.component').then(m => m.RecordatoriosComponent)
+
   },
   {
     path: 'citas-medicas',
